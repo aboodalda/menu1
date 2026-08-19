@@ -664,6 +664,7 @@ async function loadAll() {
     render();
 
     await loadSettings();
+    await loadDesign();
 
   } catch (error) {
 
@@ -2010,6 +2011,114 @@ $("settingsForm").addEventListener(
 
       alert(
         "حدث خطأ أثناء حفظ الإعدادات:\n" +
+        error.message
+      );
+
+    }
+
+  }
+);
+/* =========================================
+   تخصيص المنيو
+========================================= */
+
+async function loadDesignSettings() {
+
+  const designRef = doc(
+    db,
+    "settings",
+    "design"
+  );
+
+  const designSnap = await getDoc(designRef);
+
+  const data = designSnap.exists()
+    ? designSnap.data()
+    : {};
+
+  $("primaryColor").value =
+    data.primaryColor || "#111111";
+
+  $("buttonColor").value =
+    data.buttonColor || "#111111";
+
+  $("heroTitle").value =
+    data.heroTitle || "";
+
+  $("heroDescription").value =
+    data.heroDescription || "";
+
+  $("heroImage").value =
+    data.heroImage || "";
+}
+
+
+/* تحميل التخصيص عند تسجيل الدخول */
+
+async function loadDesign() {
+
+  try {
+
+    await loadDesignSettings();
+
+  } catch (error) {
+
+    console.error(
+      "Design settings error:",
+      error
+    );
+
+  }
+
+}
+
+
+/* حفظ التخصيص */
+
+$("designForm").addEventListener(
+  "submit",
+  async e => {
+
+    e.preventDefault();
+
+    try {
+
+      await setDoc(
+        doc(db, "settings", "design"),
+        {
+
+          primaryColor:
+            $("primaryColor").value,
+
+          buttonColor:
+            $("buttonColor").value,
+
+          heroTitle:
+            $("heroTitle").value.trim(),
+
+          heroDescription:
+            $("heroDescription").value.trim(),
+
+          heroImage:
+            $("heroImage").value.trim(),
+
+          updatedAt:
+            serverTimestamp()
+
+        },
+        {
+          merge: true
+        }
+      );
+
+      toast("تم حفظ التخصيص ✅");
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "حدث خطأ أثناء حفظ التخصيص:\n" +
         error.message
       );
 
