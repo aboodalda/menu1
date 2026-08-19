@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CaféMenu | لوحة صاحب المطعم</title>
+  <link rel="stylesheet" href="owner.css">
+</head>
+<body>
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="logo">☕</div>
+    <h1>CaféMenu</h1>
+    <p>لوحة صاحب المطعم</p>
+    <form id="loginForm">
+      <input id="loginEmail" type="email" placeholder="البريد الإلكتروني" required>
+      <input id="loginPassword" type="password" placeholder="كلمة المرور" required>
+      <button class="primary" type="submit">تسجيل الدخول</button>
+      <div id="loginError" class="error"></div>
+    </form>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+  <aside class="sidebar">
+    <div class="brand"><span>☕</span><div><b>CaféMenu</b><small>Owner Panel</small></div></div>
+    <button class="nav active" data-page="dashboard">📊 الرئيسية</button>
+    <button class="nav" data-page="categories">📂 الأقسام</button>
+    <button class="nav" data-page="products">🍔 الأصناف</button>
+    <button class="nav" data-page="settings">⚙️ إعدادات المطعم</button>
+    <button id="logoutBtn" class="logout">↪ تسجيل الخروج</button>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div><small>لوحة التحكم</small><h2 id="pageTitle">الرئيسية</h2></div>
+      <a href="./" target="_blank" class="menu-link">👁️ عرض المنيو</a>
+    </header>
+
+    <section id="dashboardPage" class="page">
+      <div class="stats">
+        <div class="stat"><span>📂</span><strong id="categoryCount">0</strong><small>الأقسام</small></div>
+        <div class="stat"><span>🍔</span><strong id="productCount">0</strong><small>الأصناف</small></div>
+        <div class="stat"><span>🟢</span><strong id="availableCount">0</strong><small>متوفر</small></div>
+        <div class="stat"><span>⭐</span><strong id="featuredCount">0</strong><small>مميز</small></div>
+      </div>
+      <div class="welcome panel">
+        <h3>إدارة المنيو بسهولة</h3>
+        <p>أضف الأقسام والأصناف والصور والأسعار، وستُحفظ البيانات في Firebase.</p>
+        <div class="actions">
+          <button class="primary" id="quickCategory">+ إضافة قسم</button>
+          <button class="dark" id="quickProduct">+ إضافة صنف</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="categoriesPage" class="page hidden">
+      <div class="section-head">
+        <div><h3>الأقسام</h3><p>أضف صورة واسم لكل قسم.</p></div>
+        <button class="primary" id="addCategoryBtn">+ إضافة قسم</button>
+      </div>
+      <div id="categoriesGrid" class="grid"></div>
+    </section>
+
+    <section id="productsPage" class="page hidden">
+      <div class="section-head">
+        <div><h3>الأصناف</h3><p>الصورة، الاسم، السعر، الوصف، القسم والحالة.</p></div>
+        <button class="primary" id="addProductBtn">+ إضافة صنف</button>
+      </div>
+      <div id="productsGrid" class="grid"></div>
+    </section>
+
+    <section id="settingsPage" class="page hidden">
+      <div class="panel settings-panel">
+        <h3>إعدادات المطعم</h3>
+        <form id="settingsForm">
+          <label>اسم المطعم<input id="restaurantName" required></label>
+          <label>رقم WhatsApp<input id="whatsapp" placeholder="مثال: 97059XXXXXXXX"></label>
+          <label>رقم الهاتف<input id="phone"></label>
+          <label>العنوان<input id="address"></label>
+          <label>ساعات العمل<input id="hours" placeholder="10:00 - 23:00"></label>
+          <label>رابط الشعار<input id="logoUrl" placeholder="https://..."></label>
+          <button class="primary" type="submit">حفظ الإعدادات</button>
+        </form>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-card">
+    <button id="closeModal" class="close">×</button>
+    <h3 id="modalTitle"></h3>
+    <form id="entityForm"></form>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script type="module" src="owner.js"></script>
+</body>
+</html>
