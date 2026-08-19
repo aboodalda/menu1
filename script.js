@@ -430,7 +430,27 @@ function applyRestaurantSettings() {
       );
 
   }
+/* =========================
+   DESIGN COLORS
+========================= */
 
+if (restaurant.primaryColor) {
+
+  document.documentElement.style.setProperty(
+    "--primary",
+    restaurant.primaryColor
+  );
+
+}
+
+if (restaurant.buttonColor) {
+
+  document.documentElement.style.setProperty(
+    "--button",
+    restaurant.buttonColor
+  );
+
+}
 }
 
 
