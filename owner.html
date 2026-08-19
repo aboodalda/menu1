@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <meta name="theme-color" content="#111111">
+
   <title>CaféMenu | لوحة صاحب المطعم</title>
 
   <link rel="stylesheet" href="owner.css">
@@ -61,13 +63,14 @@
 </div>
 
 
-
 <!-- =========================================
-     APP
+     APPLICATION
 ========================================= -->
 
-<div id="app" class="app hidden">
-
+<div
+  id="app"
+  class="app hidden"
+>
 
   <!-- SIDEBAR -->
 
@@ -132,7 +135,6 @@
   </aside>
 
 
-
   <!-- MAIN -->
 
   <main class="main">
@@ -164,7 +166,6 @@
       </a>
 
     </header>
-
 
 
     <!-- =====================================
@@ -241,7 +242,6 @@
       </div>
 
 
-
       <div class="welcome panel">
 
         <h3>
@@ -276,7 +276,6 @@
       </div>
 
     </section>
-
 
 
     <!-- =====================================
@@ -319,7 +318,6 @@
       ></div>
 
     </section>
-
 
 
     <!-- =====================================
@@ -365,7 +363,6 @@
     </section>
 
 
-
     <!-- =====================================
          RESTAURANT SETTINGS
     ====================================== -->
@@ -375,371 +372,181 @@
       class="page hidden"
     >
 
-
       <div class="panel settings-panel">
 
-        <div class="section-head">
+        <h3>
+          ⚙️ إعدادات المطعم
+        </h3>
 
-          <div>
-
-            <h3>
-              ⚙️ إعدادات المطعم
-            </h3>
-
-            <p>
-              خصص معلومات وهوية المطعم التي تظهر للزبائن.
-            </p>
-
-          </div>
-
-        </div>
-
+        <p>
+          تحكم في المعلومات التي تظهر للزبائن
+          في المنيو.
+        </p>
 
 
         <form id="settingsForm">
 
 
-          <!-- ==============================
-               BASIC INFORMATION
-          =============================== -->
+          <!-- RESTAURANT NAME -->
 
-          <div class="settings-section">
+          <label>
 
-            <h4>
-              🏪 المعلومات الأساسية
-            </h4>
+            اسم المطعم
 
-
-            <div class="settings-grid">
-
-
-              <label>
-
-                اسم المطعم
-
-                <input
-                  id="restaurantName"
-                  type="text"
-                  placeholder="مثال: CaféMenu"
-                  required
-                >
-
-              </label>
-
-
-              <label>
-
-                العبارة الرئيسية
-
-                <input
-                  id="heroTitle"
-                  type="text"
-                  placeholder="مثال: طعم يستحق التجربة"
-                >
-
-              </label>
-
-
-            </div>
-
-
-            <label>
-
-              وصف المطعم
-
-              <textarea
-                id="description"
-                rows="3"
-                placeholder="اكتب وصفاً قصيراً وجذاباً للمطعم..."
-              ></textarea>
-
-            </label>
-
-          </div>
-
-
-
-          <!-- ==============================
-               CONTACT
-          =============================== -->
-
-          <div class="settings-section">
-
-            <h4>
-              📞 معلومات التواصل
-            </h4>
-
-
-            <div class="settings-grid">
-
-
-              <label>
-
-                رقم WhatsApp
-
-                <input
-                  id="whatsapp"
-                  type="text"
-                  placeholder="مثال: 970590000000"
-                >
-
-                <span class="hint">
-                  اكتب الرقم مع مفتاح الدولة بدون +
-                </span>
-
-              </label>
-
-
-              <label>
-
-                رقم الهاتف
-
-                <input
-                  id="phone"
-                  type="text"
-                  placeholder="0590000000"
-                >
-
-              </label>
-
-
-              <label>
-
-                العنوان
-
-                <input
-                  id="address"
-                  type="text"
-                  placeholder="مثال: شارع المطعم..."
-                >
-
-              </label>
-
-
-              <label>
-
-                ساعات العمل
-
-                <input
-                  id="hours"
-                  type="text"
-                  placeholder="10:00 - 23:00"
-                >
-
-              </label>
-
-
-            </div>
-
-          </div>
-
-
-
-          <!-- ==============================
-               LOGO
-          =============================== -->
-
-          <div class="settings-section">
-
-            <h4>
-              ☕ شعار المطعم
-            </h4>
-
-
-            <label>
-
-              رابط الشعار
-
-              <input
-                id="logoUrl"
-                type="url"
-                placeholder="https://..."
-              >
-
-            </label>
-
-
-            <label>
-
-              أو اختر الشعار من الهاتف
-
-              <input
-                id="logoFile"
-                type="file"
-                accept="image/*"
-              >
-
-              <span class="hint">
-                سيتم تصغير وضغط الصورة تلقائياً.
-              </span>
-
-            </label>
-
-
-            <div class="image-preview-box">
-
-              <span>
-                معاينة الشعار
-              </span>
-
-              <div class="logo-preview">
-
-                <img
-                  id="logoPreview"
-                  src="https://placehold.co/300x300?text=Logo"
-                  alt="معاينة الشعار"
-                >
-
-              </div>
-
-            </div>
-
-          </div>
-
-
-
-          <!-- ==============================
-               HERO IMAGE
-          =============================== -->
-
-          <div class="settings-section">
-
-            <h4>
-              🖼️ صورة الغلاف
-            </h4>
-
-
-            <label>
-
-              رابط صورة الغلاف
-
-              <input
-                id="heroImage"
-                type="url"
-                placeholder="https://..."
-              >
-
-            </label>
-
-
-            <label>
-
-              أو اختر صورة الغلاف من الهاتف
-
-              <input
-                id="heroFile"
-                type="file"
-                accept="image/*"
-              >
-
-              <span class="hint">
-                سيتم تصغير وضغط الصورة تلقائياً لتسريع تحميل المنيو.
-              </span>
-
-            </label>
-
-
-            <div class="image-preview-box">
-
-              <span>
-                معاينة صورة الغلاف
-              </span>
-
-              <img
-                id="heroPreview"
-                class="hero-preview"
-                src="https://placehold.co/1200x600?text=Restaurant+Cover"
-                alt="معاينة الغلاف"
-              >
-
-            </div>
-
-          </div>
-
-
-
-          <!-- ==============================
-               COLORS
-          =============================== -->
-
-          <div class="settings-section">
-
-            <h4>
-              🎨 ألوان المنيو
-            </h4>
-
-
-            <div class="settings-grid">
-
-
-              <label>
-
-                اللون الرئيسي
-
-                <div class="color-control">
-
-                  <input
-                    id="primaryColor"
-                    type="color"
-                    value="#111111"
-                  >
-
-                  <input
-                    id="primaryColorText"
-                    type="text"
-                    value="#111111"
-                    placeholder="#111111"
-                  >
-
-                </div>
-
-              </label>
-
-
-              <label>
-
-                اللون الثانوي
-
-                <div class="color-control">
-
-                  <input
-                    id="secondaryColor"
-                    type="color"
-                    value="#f59e0b"
-                  >
-
-                  <input
-                    id="secondaryColorText"
-                    type="text"
-                    value="#f59e0b"
-                    placeholder="#f59e0b"
-                  >
-
-                </div>
-
-              </label>
-
-
-            </div>
-
-          </div>
-
-
-
-          <!-- ==============================
-               SAVE
-          =============================== -->
-
-          <div class="settings-save">
-
-            <button
-              class="primary"
-              type="submit"
+            <input
+              id="restaurantName"
+              required
+              placeholder="مثال: مطعم السعادة"
             >
-              💾 حفظ إعدادات المطعم
-            </button>
 
-          </div>
+          </label>
+
+
+          <!-- TAGLINE -->
+
+          <label>
+
+            العبارة تحت اسم المطعم
+
+            <input
+              id="tagline"
+              placeholder="مثال: منيو إلكتروني"
+            >
+
+          </label>
+
+
+          <!-- HERO TITLE -->
+
+          <label>
+
+            عنوان الواجهة الرئيسية
+
+            <input
+              id="heroTitle"
+              placeholder="مثال: طعم يستحق التجربة"
+            >
+
+          </label>
+
+
+          <!-- DESCRIPTION -->
+
+          <label>
+
+            وصف المطعم
+
+            <textarea
+              id="description"
+              rows="4"
+              placeholder="اكتب وصفاً قصيراً وجذاباً للمطعم"
+            ></textarea>
+
+          </label>
+
+
+          <!-- HERO IMAGE -->
+
+          <label>
+
+            رابط صورة الغلاف
+
+            <input
+              id="heroImage"
+              type="url"
+              placeholder="https://..."
+            >
+
+            <span class="hint">
+              ضع رابط صورة مباشر لصورة الغلاف.
+            </span>
+
+          </label>
+
+
+          <!-- LOGO -->
+
+          <label>
+
+            رابط شعار المطعم
+
+            <input
+              id="logoUrl"
+              type="url"
+              placeholder="https://..."
+            >
+
+            <span class="hint">
+              يمكنك لاحقاً إضافة رفع الشعار من الجهاز.
+            </span>
+
+          </label>
+
+
+          <!-- WHATSAPP -->
+
+          <label>
+
+            رقم WhatsApp
+
+            <input
+              id="whatsapp"
+              placeholder="مثال: 97059XXXXXXXX"
+            >
+
+          </label>
+
+
+          <!-- PHONE -->
+
+          <label>
+
+            رقم الهاتف
+
+            <input
+              id="phone"
+              placeholder="0590000000"
+            >
+
+          </label>
+
+
+          <!-- ADDRESS -->
+
+          <label>
+
+            العنوان
+
+            <input
+              id="address"
+              placeholder="مثال: غزة - شارع..."
+            >
+
+          </label>
+
+
+          <!-- HOURS -->
+
+          <label>
+
+            ساعات العمل
+
+            <input
+              id="hours"
+              placeholder="10:00 - 23:00"
+            >
+
+          </label>
+
+
+          <!-- SAVE -->
+
+          <button
+            class="primary"
+            type="submit"
+          >
+            💾 حفظ الإعدادات
+          </button>
 
 
         </form>
@@ -748,10 +555,10 @@
 
     </section>
 
+
   </main>
 
 </div>
-
 
 
 <!-- =========================================
@@ -768,18 +575,20 @@
     <button
       id="closeModal"
       class="close"
+      type="button"
     >
       ×
     </button>
 
+
     <h3 id="modalTitle"></h3>
+
 
     <form id="entityForm"></form>
 
   </div>
 
 </div>
-
 
 
 <!-- TOAST -->
@@ -790,6 +599,7 @@
 ></div>
 
 
+<!-- JAVASCRIPT -->
 
 <script
   type="module"
