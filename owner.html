@@ -554,7 +554,74 @@
       </div>
 
     </section>
+<section id="designPage" class="page hidden">
+  <div class="section-head">
+    <div>
+      <h3>🎨 تخصيص المنيو</h3>
+      <p>تحكم بشكل المنيو والألوان والصورة الرئيسية.</p>
+    </div>
+  </div>
 
+  <div class="panel settings-panel">
+
+    <h3>مظهر المنيو</h3>
+
+    <form id="designForm">
+
+      <label>
+        اللون الرئيسي
+        <input
+          id="primaryColor"
+          type="color"
+          value="#111111"
+        >
+      </label>
+
+      <label>
+        لون الأزرار
+        <input
+          id="buttonColor"
+          type="color"
+          value="#111111"
+        >
+      </label>
+
+      <label>
+        عنوان الواجهة
+        <input
+          id="heroTitle"
+          placeholder="مثال: طعم يستحق التجربة"
+        >
+      </label>
+
+      <label>
+        وصف الواجهة
+        <textarea
+          id="heroDescription"
+          placeholder="اكتب وصفاً قصيراً عن المطعم..."
+        ></textarea>
+      </label>
+
+      <label>
+        رابط صورة الغلاف
+        <input
+          id="heroImage"
+          type="url"
+          placeholder="https://..."
+        >
+      </label>
+
+      <button
+        class="primary"
+        type="submit"
+      >
+        حفظ التخصيص
+      </button>
+
+    </form>
+
+  </div>
+</section>
 
   </main>
 
