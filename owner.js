@@ -23,31 +23,52 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 
-/* =========================================
-   FIREBASE
-========================================= */
+/* =====================================================
+   FIREBASE CONFIG
+===================================================== */
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCsS0rR0wOz3mGBszmtKwPXQZi4pFVcukA",
-  authDomain: "cafemenu-3ff9a.firebaseapp.com",
-  projectId: "cafemenu-3ff9a",
-  storageBucket: "cafemenu-3ff9a.firebasestorage.app",
-  messagingSenderId: "52378316579",
-  appId: "1:52378316579:web:8512b57f8a9c6f64b8a696",
-  measurementId: "G-7DEMS2C6DY"
+
+  apiKey:
+    "AIzaSyCsS0rR0wOz3mGBszmtKwPXQZi4pFVcukA",
+
+  authDomain:
+    "cafemenu-3ff9a.firebaseapp.com",
+
+  projectId:
+    "cafemenu-3ff9a",
+
+  storageBucket:
+    "cafemenu-3ff9a.firebasestorage.app",
+
+  messagingSenderId:
+    "52378316579",
+
+  appId:
+    "1:52378316579:web:8512b57f8a9c6f64b8a696",
+
+  measurementId:
+    "G-7DEMS2C6DY"
 };
 
-const app = initializeApp(firebaseConfig);
 
-const auth = getAuth(app);
+/* =====================================================
+   INITIALIZE
+===================================================== */
 
-const db = getFirestore(app);
+const app =
+  initializeApp(firebaseConfig);
+
+const auth =
+  getAuth(app);
+
+const db =
+  getFirestore(app);
 
 
-
-/* =========================================
-   GLOBAL
-========================================= */
+/* =====================================================
+   GLOBAL DATA
+===================================================== */
 
 let categories = [];
 
@@ -57,62 +78,72 @@ let editingId = null;
 
 let editingType = null;
 
-
 const $ = id =>
   document.getElementById(id);
-
 
 const placeholder =
   "https://placehold.co/900x600?text=CafeMenu";
 
 
-
-/* =========================================
+/* =====================================================
    ESCAPE HTML
-========================================= */
+===================================================== */
 
-function esc(v) {
+function esc(value) {
 
-  return String(v ?? "")
+  return String(value ?? "")
     .replace(/[&<>"']/g, m => ({
+
       "&": "&amp;",
       "<": "&lt;",
       ">": "&gt;",
       '"': "&quot;",
       "'": "&#039;"
+
     }[m]));
 
 }
 
 
+/* =====================================================
+   TOAST
+===================================================== */
 
-function toast(text) {
+function toast(message) {
 
-  $("toast").textContent = text;
+  const element =
+    $("toast");
 
-  $("toast").classList.add("show");
+  if (!element) return;
+
+  element.textContent =
+    message;
+
+  element.classList.add("show");
 
   setTimeout(() => {
 
-    $("toast").classList.remove("show");
+    element.classList.remove("show");
 
-  }, 2200);
-
-}
-
-
-
-function img(v) {
-
-  return v || placeholder;
+  }, 2500);
 
 }
 
 
+/* =====================================================
+   IMAGE
+===================================================== */
 
-/* =========================================
+function img(value) {
+
+  return value || placeholder;
+
+}
+
+
+/* =====================================================
    IMAGE COMPRESSION
-========================================= */
+===================================================== */
 
 function compressImage(file) {
 
@@ -142,7 +173,7 @@ function compressImage(file) {
       new FileReader();
 
 
-    reader.onload = e => {
+    reader.onload = event => {
 
       const image =
         new Image();
@@ -173,7 +204,8 @@ function compressImage(file) {
                 (MAX_SIZE / width)
               );
 
-            width = MAX_SIZE;
+            width =
+              MAX_SIZE;
 
           } else {
 
@@ -183,7 +215,8 @@ function compressImage(file) {
                 (MAX_SIZE / height)
               );
 
-            height = MAX_SIZE;
+            height =
+              MAX_SIZE;
 
           }
 
@@ -196,21 +229,26 @@ function compressImage(file) {
           );
 
 
-        canvas.width = width;
+        canvas.width =
+          width;
 
-        canvas.height = height;
+        canvas.height =
+          height;
 
 
         const ctx =
           canvas.getContext("2d");
 
 
-        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingEnabled =
+          true;
 
-        ctx.imageSmoothingQuality = "high";
+        ctx.imageSmoothingQuality =
+          "high";
 
 
-        ctx.fillStyle = "#ffffff";
+        ctx.fillStyle =
+          "#ffffff";
 
         ctx.fillRect(
           0,
@@ -229,7 +267,8 @@ function compressImage(file) {
         );
 
 
-        let quality = 0.72;
+        let quality =
+          0.72;
 
 
         let dataUrl =
@@ -287,7 +326,9 @@ function compressImage(file) {
         }
 
 
-        if (dataUrl.length > 600000) {
+        if (
+          dataUrl.length > 600000
+        ) {
 
           const smallCanvas =
             document.createElement(
@@ -389,7 +430,7 @@ function compressImage(file) {
 
 
       image.src =
-        e.target.result;
+        event.target.result;
 
     };
 
@@ -412,31 +453,34 @@ function compressImage(file) {
 }
 
 
-
-/* =========================================
+/* =====================================================
    LOGIN
-========================================= */
+===================================================== */
 
 $("loginForm").addEventListener(
   "submit",
-  async e => {
+  async event => {
 
-    e.preventDefault();
+    event.preventDefault();
 
-    $("loginError").textContent = "";
-
+    $("loginError").textContent =
+      "";
 
     try {
 
       await signInWithEmailAndPassword(
+
         auth,
-        $("loginEmail").value,
+
+        $("loginEmail").value.trim(),
+
         $("loginPassword").value
+
       );
 
-    } catch (err) {
+    } catch (error) {
 
-      console.error(err);
+      console.error(error);
 
       $("loginError").textContent =
         "بيانات الدخول غير صحيحة أو حدث خطأ.";
@@ -447,15 +491,17 @@ $("loginForm").addEventListener(
 );
 
 
+/* =====================================================
+   LOGOUT
+===================================================== */
 
 $("logoutBtn").onclick =
   () => signOut(auth);
 
 
-
-/* =========================================
+/* =====================================================
    AUTH STATE
-========================================= */
+===================================================== */
 
 onAuthStateChanged(
   auth,
@@ -466,7 +512,6 @@ onAuthStateChanged(
       $("loginScreen")
         .classList
         .add("hidden");
-
 
       $("app")
         .classList
@@ -481,7 +526,6 @@ onAuthStateChanged(
         .classList
         .add("hidden");
 
-
       $("loginScreen")
         .classList
         .remove("hidden");
@@ -492,128 +536,154 @@ onAuthStateChanged(
 );
 
 
-
-/* =========================================
+/* =====================================================
    NAVIGATION
-========================================= */
+===================================================== */
 
 document
   .querySelectorAll(".nav")
-  .forEach(btn => {
+  .forEach(button => {
 
-    btn.onclick = () => {
+    button.onclick = () => {
 
       document
         .querySelectorAll(".nav")
-        .forEach(x =>
-          x.classList.remove(
+        .forEach(item =>
+          item.classList.remove(
             "active"
           )
         );
 
 
-      btn.classList.add(
+      button.classList.add(
         "active"
       );
 
 
       document
         .querySelectorAll(".page")
-        .forEach(x =>
-          x.classList.add(
+        .forEach(page =>
+          page.classList.add(
             "hidden"
           )
         );
 
 
-      $(btn.dataset.page + "Page")
-        .classList
-        .remove("hidden");
+      const page =
+        $(button.dataset.page + "Page");
+
+
+      if (page) {
+
+        page.classList.remove(
+          "hidden"
+        );
+
+      }
 
 
       $("pageTitle").textContent =
-        btn.textContent.replace(
-          /^[^ ]+ /,
-          ""
-        );
+        button.textContent
+          .replace(/^[^ ]+ /, "");
 
     };
 
   });
 
 
+/* =====================================================
+   BUTTONS
+===================================================== */
 
 $("quickCategory").onclick =
   () => openCategoryModal();
 
-
 $("quickProduct").onclick =
   () => openProductModal();
-
 
 $("addCategoryBtn").onclick =
   () => openCategoryModal();
 
-
 $("addProductBtn").onclick =
   () => openProductModal();
-
 
 $("closeModal").onclick =
   closeModal;
 
 
-
-/* =========================================
+/* =====================================================
    LOAD ALL
-========================================= */
+===================================================== */
 
 async function loadAll() {
 
-  categories =
-    (
+  try {
+
+    const categoriesSnapshot =
       await getDocs(
         collection(
           db,
           "categories"
         )
-      )
-    )
-      .docs
-      .map(d => ({
-        id: d.id,
-        ...d.data()
-      }));
+      );
 
 
-  products =
-    (
+    categories =
+      categoriesSnapshot.docs.map(
+        document => ({
+
+          id: document.id,
+
+          ...document.data()
+
+        })
+      );
+
+
+    const productsSnapshot =
       await getDocs(
         collection(
           db,
           "products"
         )
-      )
-    )
-      .docs
-      .map(d => ({
-        id: d.id,
-        ...d.data()
-      }));
+      );
 
 
-  render();
+    products =
+      productsSnapshot.docs.map(
+        document => ({
+
+          id: document.id,
+
+          ...document.data()
+
+        })
+      );
 
 
-  await loadSettings();
+    render();
+
+    await loadSettings();
+
+  } catch (error) {
+
+    console.error(
+      "Load error:",
+      error
+    );
+
+    toast(
+      "تعذر تحميل البيانات"
+    );
+
+  }
 
 }
 
 
-
-/* =========================================
+/* =====================================================
    RENDER
-========================================= */
+===================================================== */
 
 function render() {
 
@@ -627,42 +697,51 @@ function render() {
 
   $("availableCount").textContent =
     products.filter(
-      p => p.available !== false
+      p =>
+        p.available !== false
     ).length;
 
 
   $("featuredCount").textContent =
     products.filter(
-      p => p.featured === true
+      p =>
+        p.featured === true
     ).length;
 
 
+  /* =================================
+     CATEGORIES
+  ================================= */
 
   $("categoriesGrid").innerHTML =
-
     categories.length
 
-      ? categories.map(c => `
+      ?
+
+      categories.map(category => `
 
         <article class="card">
 
           <img
             class="card-image"
-            src="${esc(img(c.image))}"
+            src="${esc(
+              img(category.image)
+            )}"
             onerror="this.src='${placeholder}'"
           >
 
           <div class="card-body">
 
             <h4>
-              ${esc(c.name)}
+              ${esc(category.name)}
             </h4>
 
             <p>
               ${
                 products.filter(
-                  p =>
-                    p.categoryId === c.id
+                  product =>
+                    product.categoryId ===
+                    category.id
                 ).length
               }
               أصناف
@@ -672,14 +751,14 @@ function render() {
 
               <button
                 class="dark"
-                onclick="editCategory('${c.id}')"
+                onclick="editCategory('${category.id}')"
               >
                 تعديل
               </button>
 
               <button
                 class="danger"
-                onclick="deleteCategory('${c.id}')"
+                onclick="deleteCategory('${category.id}')"
               >
                 حذف
               </button>
@@ -692,30 +771,34 @@ function render() {
 
       `).join("")
 
-      : `
+      :
 
-        <div class="empty">
-
-          لا توجد أقسام.
-          أضف أول قسم.
-
-        </div>
-
+      `
+      <div class="empty">
+        لا توجد أقسام.
+        أضف أول قسم.
+      </div>
       `;
 
 
+  /* =================================
+     PRODUCTS
+  ================================= */
 
   $("productsGrid").innerHTML =
-
     products.length
 
-      ? products.map(p => `
+      ?
+
+      products.map(product => `
 
         <article class="card">
 
           <img
             class="card-image"
-            src="${esc(img(p.image))}"
+            src="${esc(
+              img(product.image)
+            )}"
             onerror="this.src='${placeholder}'"
           >
 
@@ -723,12 +806,13 @@ function render() {
 
             <h4>
 
-              ${esc(p.name)}
+              ${esc(product.name)}
 
               <span class="price">
 
-                ${Number(p.price || 0)}
-                ₪
+                ${Number(
+                  product.price || 0
+                )} ₪
 
               </span>
 
@@ -736,23 +820,25 @@ function render() {
 
 
             <p>
+
               ${esc(
-                p.description ||
+                product.description ||
                 "بدون وصف"
               )}
+
             </p>
 
 
             <span
               class="badge ${
-                p.available !== false
+                product.available !== false
                   ? "badge-on"
                   : "badge-off"
               }"
             >
 
               ${
-                p.available !== false
+                product.available !== false
                   ? "متوفر"
                   : "غير متوفر"
               }
@@ -761,24 +847,36 @@ function render() {
 
 
             ${
-              p.featured
-                ? `
-                  <span class="badge badge-on">
-                    ⭐ مميز
-                  </span>
+              product.featured
+
+                ?
+
                 `
-                : ""
+                <span class="badge badge-on">
+                  ⭐ مميز
+                </span>
+                `
+
+                :
+
+                ""
             }
 
 
             ${
-              p.offer
-                ? `
-                  <span class="badge badge-on">
-                    🔥 عرض
-                  </span>
+              product.offer
+
+                ?
+
                 `
-                : ""
+                <span class="badge badge-on">
+                  🔥 عرض
+                </span>
+                `
+
+                :
+
+                ""
             }
 
 
@@ -789,15 +887,14 @@ function render() {
 
               <button
                 class="dark"
-                onclick="editProduct('${p.id}')"
+                onclick="editProduct('${product.id}')"
               >
                 تعديل
               </button>
 
-
               <button
                 class="danger"
-                onclick="deleteProduct('${p.id}')"
+                onclick="deleteProduct('${product.id}')"
               >
                 حذف
               </button>
@@ -810,26 +907,25 @@ function render() {
 
       `).join("")
 
-      : `
+      :
 
-        <div class="empty">
-
-          لا توجد أصناف.
-          أضف أول صنف.
-
-        </div>
-
+      `
+      <div class="empty">
+        لا توجد أصناف.
+        أضف أول صنف.
+      </div>
       `;
 
 }
 
 
-
-/* =========================================
+/* =====================================================
    CATEGORY MODAL
-========================================= */
+===================================================== */
 
-function openCategoryModal(item = null) {
+function openCategoryModal(
+  item = null
+) {
 
   editingId =
     item?.id || null;
@@ -853,7 +949,9 @@ function openCategoryModal(item = null) {
       <input
         id="fName"
         required
-        value="${esc(item?.name || "")}"
+        value="${esc(
+          item?.name || ""
+        )}"
         placeholder="مثال: الحلويات"
       >
 
@@ -866,7 +964,9 @@ function openCategoryModal(item = null) {
 
       <input
         id="fImage"
-        value="${esc(item?.image || "")}"
+        value="${esc(
+          item?.image || ""
+        )}"
         placeholder="https://..."
       >
 
@@ -884,9 +984,7 @@ function openCategoryModal(item = null) {
       >
 
       <span class="hint">
-
         سيتم تصغير وضغط الصورة تلقائياً.
-
       </span>
 
     </label>
@@ -895,7 +993,9 @@ function openCategoryModal(item = null) {
     <img
       id="preview"
       class="preview"
-      src="${esc(img(item?.image))}"
+      src="${esc(
+        img(item?.image)
+      )}"
     >
 
 
@@ -919,12 +1019,13 @@ function openCategoryModal(item = null) {
 }
 
 
-
-/* =========================================
+/* =====================================================
    PRODUCT MODAL
-========================================= */
+===================================================== */
 
-function openProductModal(item = null) {
+function openProductModal(
+  item = null
+) {
 
   editingId =
     item?.id || null;
@@ -955,8 +1056,11 @@ function openProductModal(item = null) {
 }
 
 
+/* =====================================================
+   PRODUCT FORM
+===================================================== */
 
-function productForm(p) {
+function productForm(product) {
 
   return `
 
@@ -967,7 +1071,9 @@ function productForm(p) {
       <input
         id="fName"
         required
-        value="${esc(p.name || "")}"
+        value="${esc(
+          product.name || ""
+        )}"
         placeholder="مثال: كريب نوتيلا"
       >
 
@@ -983,22 +1089,33 @@ function productForm(p) {
         required
       >
 
-        ${categories.map(c => `
+        <option value="">
+          اختر القسم
+        </option>
 
-          <option
-            value="${c.id}"
-            ${
-              p.categoryId === c.id
-                ? "selected"
-                : ""
-            }
-          >
+        ${
+          categories.map(
+            category => `
 
-            ${esc(c.name)}
+              <option
+                value="${category.id}"
+                ${
+                  product.categoryId ===
+                  category.id
+                    ? "selected"
+                    : ""
+                }
+              >
 
-          </option>
+                ${esc(
+                  category.name
+                )}
 
-        `).join("")}
+              </option>
+
+            `
+          ).join("")
+        }
 
       </select>
 
@@ -1015,7 +1132,7 @@ function productForm(p) {
         min="0"
         step="0.01"
         required
-        value="${p.price ?? ""}"
+        value="${product.price ?? ""}"
       >
 
     </label>
@@ -1029,7 +1146,7 @@ function productForm(p) {
         id="fDescription"
         placeholder="وصف مختصر"
       >${esc(
-        p.description || ""
+        product.description || ""
       )}</textarea>
 
     </label>
@@ -1041,7 +1158,9 @@ function productForm(p) {
 
       <input
         id="fImage"
-        value="${esc(p.image || "")}"
+        value="${esc(
+          product.image || ""
+        )}"
         placeholder="https://..."
       >
 
@@ -1059,9 +1178,7 @@ function productForm(p) {
       >
 
       <span class="hint">
-
         سيتم تصغير وضغط الصورة تلقائياً.
-
       </span>
 
     </label>
@@ -1070,7 +1187,9 @@ function productForm(p) {
     <img
       id="preview"
       class="preview"
-      src="${esc(img(p.image))}"
+      src="${esc(
+        img(product.image)
+      )}"
     >
 
 
@@ -1080,7 +1199,7 @@ function productForm(p) {
         id="fAvailable"
         type="checkbox"
         ${
-          p.available !== false
+          product.available !== false
             ? "checked"
             : ""
         }
@@ -1097,7 +1216,7 @@ function productForm(p) {
         id="fFeatured"
         type="checkbox"
         ${
-          p.featured
+          product.featured
             ? "checked"
             : ""
         }
@@ -1114,7 +1233,7 @@ function productForm(p) {
         id="fOffer"
         type="checkbox"
         ${
-          p.offer
+          product.offer
             ? "checked"
             : ""
         }
@@ -1137,10 +1256,9 @@ function productForm(p) {
 }
 
 
-
-/* =========================================
+/* =====================================================
    IMAGE PREVIEW
-========================================= */
+===================================================== */
 
 function bindPreview() {
 
@@ -1156,49 +1274,50 @@ function bindPreview() {
 
   if (file) {
 
-    file.onchange = () => {
+    file.onchange =
+      () => {
 
-      if (
-        file.files &&
-        file.files[0]
-      ) {
+        if (
+          file.files &&
+          file.files[0]
+        ) {
 
-        preview.src =
-          URL.createObjectURL(
-            file.files[0]
-          );
+          preview.src =
+            URL.createObjectURL(
+              file.files[0]
+            );
 
-      }
+        }
 
-    };
+      };
 
   }
 
 
   if (url) {
 
-    url.oninput = () => {
+    url.oninput =
+      () => {
 
-      if (
-        url.value.trim()
-      ) {
+        if (
+          url.value.trim()
+        ) {
 
-        preview.src =
-          url.value.trim();
+          preview.src =
+            url.value.trim();
 
-      }
+        }
 
-    };
+      };
 
   }
 
 }
 
 
-
-/* =========================================
-   MODAL CLOSE
-========================================= */
+/* =====================================================
+   CLOSE MODAL
+===================================================== */
 
 function closeModal() {
 
@@ -1207,22 +1326,28 @@ function closeModal() {
     .add("hidden");
 
 
-  $("entityForm").innerHTML =
-    "";
+  $("entityForm")
+    .innerHTML = "";
+
+
+  editingId =
+    null;
+
+  editingType =
+    null;
 
 }
 
 
-
-/* =========================================
+/* =====================================================
    SAVE CATEGORY / PRODUCT
-========================================= */
+===================================================== */
 
 $("entityForm").addEventListener(
   "submit",
-  async e => {
+  async event => {
 
-    e.preventDefault();
+    event.preventDefault();
 
 
     const saveButton =
@@ -1242,6 +1367,10 @@ $("entityForm").addEventListener(
       const file =
         $("fFile")?.files?.[0];
 
+
+      /* ==============================
+         IMAGE FROM DEVICE
+      ============================== */
 
       if (file) {
 
@@ -1266,11 +1395,21 @@ $("entityForm").addEventListener(
             file
           );
 
+
+        if (!image) {
+
+          throw new Error(
+            "تعذر تجهيز الصورة."
+          );
+
+        }
+
       }
 
 
-
-      /* CATEGORY */
+      /* ==============================
+         CATEGORY
+      ============================== */
 
       if (
         editingType ===
@@ -1309,26 +1448,35 @@ $("entityForm").addEventListener(
         if (editingId) {
 
           await updateDoc(
+
             doc(
               db,
               "categories",
               editingId
             ),
+
             data
+
           );
 
         } else {
 
           await addDoc(
+
             collection(
               db,
               "categories"
             ),
+
             {
+
               ...data,
+
               createdAt:
                 serverTimestamp()
+
             }
+
           );
 
         }
@@ -1336,8 +1484,9 @@ $("entityForm").addEventListener(
       }
 
 
-
-      /* PRODUCT */
+      /* ==============================
+         PRODUCT
+      ============================== */
 
       else {
 
@@ -1348,12 +1497,14 @@ $("entityForm").addEventListener(
 
 
         const categoryId =
-          $("fCategory").value;
+          $("fCategory")
+            .value;
 
 
         const price =
           Number(
-            $("fPrice").value
+            $("fPrice")
+              .value
           );
 
 
@@ -1379,7 +1530,9 @@ $("entityForm").addEventListener(
         }
 
 
-        if (isNaN(price)) {
+        if (
+          isNaN(price)
+        ) {
 
           alert(
             "أدخل السعر."
@@ -1426,26 +1579,35 @@ $("entityForm").addEventListener(
         if (editingId) {
 
           await updateDoc(
+
             doc(
               db,
               "products",
               editingId
             ),
+
             data
+
           );
 
         } else {
 
           await addDoc(
+
             collection(
               db,
               "products"
             ),
+
             {
+
               ...data,
+
               createdAt:
                 serverTimestamp()
+
             }
+
           );
 
         }
@@ -1464,14 +1626,17 @@ $("entityForm").addEventListener(
       );
 
 
-    } catch (err) {
+    } catch (error) {
 
-      console.error(err);
+      console.error(
+        "Save error:",
+        error
+      );
 
 
       alert(
         "حدث خطأ أثناء الحفظ:\n" +
-        err.message
+        error.message
       );
 
 
@@ -1493,29 +1658,73 @@ $("entityForm").addEventListener(
 );
 
 
-
-/* =========================================
-   EDIT / DELETE
-========================================= */
+/* =====================================================
+   EDIT CATEGORY
+===================================================== */
 
 window.editCategory =
-  id =>
-    openCategoryModal(
+  id => {
+
+    const category =
       categories.find(
-        x => x.id === id
-      )
+        item =>
+          item.id === id
+      );
+
+
+    if (!category) {
+
+      toast(
+        "القسم غير موجود"
+      );
+
+      return;
+
+    }
+
+
+    openCategoryModal(
+      category
     );
 
+  };
+
+
+/* =====================================================
+   EDIT PRODUCT
+===================================================== */
 
 window.editProduct =
-  id =>
-    openProductModal(
+  id => {
+
+    const product =
       products.find(
-        x => x.id === id
-      )
+        item =>
+          item.id === id
+      );
+
+
+    if (!product) {
+
+      toast(
+        "الصنف غير موجود"
+      );
+
+      return;
+
+    }
+
+
+    openProductModal(
+      product
     );
 
+  };
 
+
+/* =====================================================
+   DELETE CATEGORY
+===================================================== */
 
 window.deleteCategory =
   async id => {
@@ -1527,25 +1736,44 @@ window.deleteCategory =
     ) return;
 
 
-    await deleteDoc(
-      doc(
-        db,
-        "categories",
-        id
-      )
-    );
+    try {
+
+      await deleteDoc(
+
+        doc(
+          db,
+          "categories",
+          id
+        )
+
+      );
 
 
-    await loadAll();
+      await loadAll();
 
 
-    toast(
-      "تم حذف القسم"
-    );
+      toast(
+        "تم حذف القسم"
+      );
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "تعذر حذف القسم:\n" +
+        error.message
+      );
+
+    }
 
   };
 
 
+/* =====================================================
+   DELETE PRODUCT
+===================================================== */
 
 window.deleteProduct =
   async id => {
@@ -1557,29 +1785,44 @@ window.deleteProduct =
     ) return;
 
 
-    await deleteDoc(
-      doc(
-        db,
-        "products",
-        id
-      )
-    );
+    try {
+
+      await deleteDoc(
+
+        doc(
+          db,
+          "products",
+          id
+        )
+
+      );
 
 
-    await loadAll();
+      await loadAll();
 
 
-    toast(
-      "تم حذف الصنف"
-    );
+      toast(
+        "تم حذف الصنف"
+      );
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "تعذر حذف الصنف:\n" +
+        error.message
+      );
+
+    }
 
   };
 
 
-
-/* =========================================
-   RESTAURANT SETTINGS
-========================================= */
+/* =====================================================
+   LOAD RESTAURANT SETTINGS
+===================================================== */
 
 async function loadSettings() {
 
@@ -1587,94 +1830,70 @@ async function loadSettings() {
 
     const snapshot =
       await getDoc(
+
         doc(
           db,
           "settings",
           "restaurant"
         )
+
       );
 
 
-    const d =
+    const data =
       snapshot.exists()
         ? snapshot.data()
         : {};
 
 
     $("restaurantName").value =
-      d.name ||
-      d.restaurantName ||
+      data.restaurantName ||
       "CaféMenu";
 
 
+    $("tagline").value =
+      data.tagline ||
+      "منيو إلكتروني";
+
+
     $("heroTitle").value =
-      d.heroTitle ||
+      data.heroTitle ||
       "طعم يستحق التجربة";
 
 
     $("description").value =
-      d.description ||
+      data.description ||
       "اكتشف أشهى الوجبات والحلويات والمشروبات في مكان واحد.";
 
 
-    $("whatsapp").value =
-      d.whatsapp || "";
-
-
-    $("phone").value =
-      d.phone || "";
-
-
-    $("address").value =
-      d.address || "";
-
-
-    $("hours").value =
-      d.hours || "";
+    $("heroImage").value =
+      data.heroImage ||
+      "";
 
 
     $("logoUrl").value =
-      d.logo ||
-      d.logoUrl ||
+      data.logoUrl ||
       "";
 
 
-    $("heroImage").value =
-      d.heroImage ||
+    $("whatsapp").value =
+      data.whatsapp ||
       "";
 
 
-    $("primaryColor").value =
-      d.primaryColor ||
-      "#111111";
+    $("phone").value =
+      data.phone ||
+      "";
 
 
-    $("primaryColorText").value =
-      d.primaryColor ||
-      "#111111";
+    $("address").value =
+      data.address ||
+      "";
 
 
-    $("secondaryColor").value =
-      d.secondaryColor ||
-      "#f59e0b";
-
-
-    $("secondaryColorText").value =
-      d.secondaryColor ||
-      "#f59e0b";
-
-
-    updateImagePreview(
-      "logoPreview",
-      $("logoUrl").value
-    );
-
-
-    updateImagePreview(
-      "heroPreview",
-      $("heroImage").value
-    );
-
+    $("hours").value =
+      data.hours ||
+      "";
 
   } catch (error) {
 
@@ -1688,364 +1907,76 @@ async function loadSettings() {
 }
 
 
-
-/* =========================================
-   IMAGE PREVIEW SETTINGS
-========================================= */
-
-function updateImagePreview(
-  id,
-  url
-) {
-
-  const element =
-    $(id);
-
-
-  if (!element) return;
-
-
-  if (url) {
-
-    element.src =
-      url;
-
-  }
-
-}
-
-
-
-/* =========================================
-   LOGO FILE
-========================================= */
-
-$("logoFile").addEventListener(
-  "change",
-  async () => {
-
-    const file =
-      $("logoFile")
-        .files?.[0];
-
-
-    if (!file) return;
-
-
-    try {
-
-      toast(
-        "جاري تجهيز الشعار..."
-      );
-
-
-      const image =
-        await compressImage(
-          file
-        );
-
-
-      $("logoUrl").value =
-        image;
-
-
-      $("logoPreview").src =
-        image;
-
-
-      toast(
-        "تم تجهيز الشعار ✅"
-      );
-
-
-    } catch (error) {
-
-      alert(
-        error.message
-      );
-
-    }
-
-  }
-);
-
-
-
-/* =========================================
-   HERO FILE
-========================================= */
-
-$("heroFile").addEventListener(
-  "change",
-  async () => {
-
-    const file =
-      $("heroFile")
-        .files?.[0];
-
-
-    if (!file) return;
-
-
-    try {
-
-      toast(
-        "جاري تجهيز صورة الغلاف..."
-      );
-
-
-      const image =
-        await compressImage(
-          file
-        );
-
-
-      $("heroImage").value =
-        image;
-
-
-      $("heroPreview").src =
-        image;
-
-
-      toast(
-        "تم تجهيز صورة الغلاف ✅"
-      );
-
-
-    } catch (error) {
-
-      alert(
-        error.message
-      );
-
-    }
-
-  }
-);
-
-
-
-/* =========================================
-   URL PREVIEW
-========================================= */
-
-$("logoUrl").addEventListener(
-  "input",
-  () => {
-
-    updateImagePreview(
-      "logoPreview",
-      $("logoUrl").value.trim()
-    );
-
-  }
-);
-
-
-
-$("heroImage").addEventListener(
-  "input",
-  () => {
-
-    updateImagePreview(
-      "heroPreview",
-      $("heroImage").value.trim()
-    );
-
-  }
-);
-
-
-
-/* =========================================
-   COLORS
-========================================= */
-
-$("primaryColor").addEventListener(
-  "input",
-  () => {
-
-    $("primaryColorText").value =
-      $("primaryColor").value;
-
-  }
-);
-
-
-$("primaryColorText").addEventListener(
-  "input",
-  () => {
-
-    const value =
-      $("primaryColorText")
-        .value
-        .trim();
-
-
-    if (
-      /^#[0-9A-Fa-f]{6}$/
-        .test(value)
-    ) {
-
-      $("primaryColor").value =
-        value;
-
-    }
-
-  }
-);
-
-
-
-$("secondaryColor").addEventListener(
-  "input",
-  () => {
-
-    $("secondaryColorText").value =
-      $("secondaryColor").value;
-
-  }
-);
-
-
-$("secondaryColorText").addEventListener(
-  "input",
-  () => {
-
-    const value =
-      $("secondaryColorText")
-        .value
-        .trim();
-
-
-    if (
-      /^#[0-9A-Fa-f]{6}$/
-        .test(value)
-    ) {
-
-      $("secondaryColor").value =
-        value;
-
-    }
-
-  }
-);
-
-
-
-/* =========================================
-   SAVE SETTINGS
-========================================= */
+/* =====================================================
+   SAVE RESTAURANT SETTINGS
+===================================================== */
 
 $("settingsForm").addEventListener(
   "submit",
-  async e => {
+  async event => {
 
-    e.preventDefault();
-
-
-    const button =
-      $("settingsForm")
-        .querySelector(
-          'button[type="submit"]'
-        );
+    event.preventDefault();
 
 
     try {
 
-      if (button) {
+      const data = {
 
-        button.disabled =
-          true;
+        restaurantName:
+          $("restaurantName")
+            .value
+            .trim(),
 
-        button.textContent =
-          "جاري الحفظ...";
+        tagline:
+          $("tagline")
+            .value
+            .trim(),
 
-      }
+        heroTitle:
+          $("heroTitle")
+            .value
+            .trim(),
 
+        description:
+          $("description")
+            .value
+            .trim(),
 
-      let logo =
-        $("logoUrl")
-          .value
-          .trim();
+        heroImage:
+          $("heroImage")
+            .value
+            .trim(),
 
+        logoUrl:
+          $("logoUrl")
+            .value
+            .trim(),
 
-      let heroImage =
-        $("heroImage")
-          .value
-          .trim();
+        whatsapp:
+          $("whatsapp")
+            .value
+            .trim(),
 
+        phone:
+          $("phone")
+            .value
+            .trim(),
 
+        address:
+          $("address")
+            .value
+            .trim(),
 
-      /* ===============================
-         LOGO FILE
-      =============================== */
+        hours:
+          $("hours")
+            .value
+            .trim(),
 
-      const logoFile =
-        $("logoFile")
-          .files?.[0];
+        updatedAt:
+          serverTimestamp()
 
+      };
 
-      if (logoFile) {
-
-        toast(
-          "جاري ضغط الشعار..."
-        );
-
-
-        logo =
-          await compressImage(
-            logoFile
-          );
-
-      }
-
-
-
-      /* ===============================
-         HERO FILE
-      =============================== */
-
-      const heroFile =
-        $("heroFile")
-          .files?.[0];
-
-
-      if (heroFile) {
-
-        toast(
-          "جاري ضغط صورة الغلاف..."
-        );
-
-
-        heroImage =
-          await compressImage(
-            heroFile
-          );
-
-      }
-
-
-
-      /* ===============================
-         COLORS
-      =============================== */
-
-      const primaryColor =
-        $("primaryColor")
-          .value;
-
-
-      const secondaryColor =
-        $("secondaryColor")
-          .value;
-
-
-
-      /* ===============================
-         SAVE
-      =============================== */
 
       await setDoc(
 
@@ -2055,72 +1986,7 @@ $("settingsForm").addEventListener(
           "restaurant"
         ),
 
-        {
-
-          name:
-            $("restaurantName")
-              .value
-              .trim(),
-
-          restaurantName:
-            $("restaurantName")
-              .value
-              .trim(),
-
-          heroTitle:
-            $("heroTitle")
-              .value
-              .trim(),
-
-          description:
-            $("description")
-              .value
-              .trim(),
-
-          whatsapp:
-            $("whatsapp")
-              .value
-              .trim(),
-
-          phone:
-            $("phone")
-              .value
-              .trim(),
-
-          address:
-            $("address")
-              .value
-              .trim(),
-
-          hours:
-            $("hours")
-              .value
-              .trim(),
-
-          logo:
-
-            logo,
-
-          logoUrl:
-
-            logo,
-
-          heroImage:
-
-            heroImage,
-
-          primaryColor:
-
-            primaryColor,
-
-          secondaryColor:
-
-            secondaryColor,
-
-          updatedAt:
-            serverTimestamp()
-
-        },
+        data,
 
         {
           merge: true
@@ -2130,7 +1996,7 @@ $("settingsForm").addEventListener(
 
 
       toast(
-        "تم حفظ إعدادات المطعم بنجاح ✅"
+        "تم حفظ إعدادات المطعم ✅"
       );
 
 
@@ -2146,19 +2012,6 @@ $("settingsForm").addEventListener(
         "حدث خطأ أثناء حفظ الإعدادات:\n" +
         error.message
       );
-
-
-    } finally {
-
-      if (button) {
-
-        button.disabled =
-          false;
-
-        button.textContent =
-          "💾 حفظ إعدادات المطعم";
-
-      }
 
     }
 
