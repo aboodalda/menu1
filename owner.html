@@ -1,101 +1,800 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>CaféMenu | لوحة صاحب المطعم</title>
+
   <link rel="stylesheet" href="owner.css">
 </head>
+
 <body>
+
+<!-- =========================================
+     LOGIN
+========================================= -->
+
 <div id="loginScreen" class="login-screen">
+
   <div class="login-card">
+
     <div class="logo">☕</div>
+
     <h1>CaféMenu</h1>
+
     <p>لوحة صاحب المطعم</p>
+
     <form id="loginForm">
-      <input id="loginEmail" type="email" placeholder="البريد الإلكتروني" required>
-      <input id="loginPassword" type="password" placeholder="كلمة المرور" required>
-      <button class="primary" type="submit">تسجيل الدخول</button>
-      <div id="loginError" class="error"></div>
+
+      <input
+        id="loginEmail"
+        type="email"
+        placeholder="البريد الإلكتروني"
+        required
+      >
+
+      <input
+        id="loginPassword"
+        type="password"
+        placeholder="كلمة المرور"
+        required
+      >
+
+      <button
+        class="primary"
+        type="submit"
+      >
+        تسجيل الدخول
+      </button>
+
+      <div
+        id="loginError"
+        class="error"
+      ></div>
+
     </form>
+
   </div>
+
 </div>
+
+
+
+<!-- =========================================
+     APP
+========================================= -->
 
 <div id="app" class="app hidden">
+
+
+  <!-- SIDEBAR -->
+
   <aside class="sidebar">
-    <div class="brand"><span>☕</span><div><b>CaféMenu</b><small>Owner Panel</small></div></div>
-    <button class="nav active" data-page="dashboard">📊 الرئيسية</button>
-    <button class="nav" data-page="categories">📂 الأقسام</button>
-    <button class="nav" data-page="products">🍔 الأصناف</button>
-    <button class="nav" data-page="settings">⚙️ إعدادات المطعم</button>
-    <button id="logoutBtn" class="logout">↪ تسجيل الخروج</button>
+
+    <div class="brand">
+
+      <span>☕</span>
+
+      <div>
+
+        <b>CaféMenu</b>
+
+        <small>
+          Owner Panel
+        </small>
+
+      </div>
+
+    </div>
+
+
+    <button
+      class="nav active"
+      data-page="dashboard"
+    >
+      📊 الرئيسية
+    </button>
+
+
+    <button
+      class="nav"
+      data-page="categories"
+    >
+      📂 الأقسام
+    </button>
+
+
+    <button
+      class="nav"
+      data-page="products"
+    >
+      🍔 الأصناف
+    </button>
+
+
+    <button
+      class="nav"
+      data-page="settings"
+    >
+      ⚙️ إعدادات المطعم
+    </button>
+
+
+    <button
+      id="logoutBtn"
+      class="logout"
+    >
+      ↪ تسجيل الخروج
+    </button>
+
   </aside>
 
+
+
+  <!-- MAIN -->
+
   <main class="main">
+
+
+    <!-- TOPBAR -->
+
     <header class="topbar">
-      <div><small>لوحة التحكم</small><h2 id="pageTitle">الرئيسية</h2></div>
-      <a href="./" target="_blank" class="menu-link">👁️ عرض المنيو</a>
+
+      <div>
+
+        <small>
+          لوحة التحكم
+        </small>
+
+        <h2 id="pageTitle">
+          الرئيسية
+        </h2>
+
+      </div>
+
+
+      <a
+        href="./"
+        target="_blank"
+        class="menu-link"
+      >
+        👁️ عرض المنيو
+      </a>
+
     </header>
 
-    <section id="dashboardPage" class="page">
+
+
+    <!-- =====================================
+         DASHBOARD
+    ====================================== -->
+
+    <section
+      id="dashboardPage"
+      class="page"
+    >
+
       <div class="stats">
-        <div class="stat"><span>📂</span><strong id="categoryCount">0</strong><small>الأقسام</small></div>
-        <div class="stat"><span>🍔</span><strong id="productCount">0</strong><small>الأصناف</small></div>
-        <div class="stat"><span>🟢</span><strong id="availableCount">0</strong><small>متوفر</small></div>
-        <div class="stat"><span>⭐</span><strong id="featuredCount">0</strong><small>مميز</small></div>
-      </div>
-      <div class="welcome panel">
-        <h3>إدارة المنيو بسهولة</h3>
-        <p>أضف الأقسام والأصناف والصور والأسعار، وستُحفظ البيانات في Firebase.</p>
-        <div class="actions">
-          <button class="primary" id="quickCategory">+ إضافة قسم</button>
-          <button class="dark" id="quickProduct">+ إضافة صنف</button>
+
+
+        <div class="stat">
+
+          <span>📂</span>
+
+          <strong id="categoryCount">
+            0
+          </strong>
+
+          <small>
+            الأقسام
+          </small>
+
         </div>
+
+
+        <div class="stat">
+
+          <span>🍔</span>
+
+          <strong id="productCount">
+            0
+          </strong>
+
+          <small>
+            الأصناف
+          </small>
+
+        </div>
+
+
+        <div class="stat">
+
+          <span>🟢</span>
+
+          <strong id="availableCount">
+            0
+          </strong>
+
+          <small>
+            متوفر
+          </small>
+
+        </div>
+
+
+        <div class="stat">
+
+          <span>⭐</span>
+
+          <strong id="featuredCount">
+            0
+          </strong>
+
+          <small>
+            مميز
+          </small>
+
+        </div>
+
       </div>
+
+
+
+      <div class="welcome panel">
+
+        <h3>
+          إدارة المنيو بسهولة
+        </h3>
+
+        <p>
+          أضف الأقسام والأصناف والصور والأسعار،
+          وستُحفظ البيانات في Firebase.
+        </p>
+
+
+        <div class="actions">
+
+          <button
+            class="primary"
+            id="quickCategory"
+          >
+            + إضافة قسم
+          </button>
+
+
+          <button
+            class="dark"
+            id="quickProduct"
+          >
+            + إضافة صنف
+          </button>
+
+        </div>
+
+      </div>
+
     </section>
 
-    <section id="categoriesPage" class="page hidden">
+
+
+    <!-- =====================================
+         CATEGORIES
+    ====================================== -->
+
+    <section
+      id="categoriesPage"
+      class="page hidden"
+    >
+
       <div class="section-head">
-        <div><h3>الأقسام</h3><p>أضف صورة واسم لكل قسم.</p></div>
-        <button class="primary" id="addCategoryBtn">+ إضافة قسم</button>
+
+        <div>
+
+          <h3>
+            الأقسام
+          </h3>
+
+          <p>
+            أضف صورة واسم لكل قسم.
+          </p>
+
+        </div>
+
+
+        <button
+          class="primary"
+          id="addCategoryBtn"
+        >
+          + إضافة قسم
+        </button>
+
       </div>
-      <div id="categoriesGrid" class="grid"></div>
+
+
+      <div
+        id="categoriesGrid"
+        class="grid"
+      ></div>
+
     </section>
 
-    <section id="productsPage" class="page hidden">
+
+
+    <!-- =====================================
+         PRODUCTS
+    ====================================== -->
+
+    <section
+      id="productsPage"
+      class="page hidden"
+    >
+
       <div class="section-head">
-        <div><h3>الأصناف</h3><p>الصورة، الاسم، السعر، الوصف، القسم والحالة.</p></div>
-        <button class="primary" id="addProductBtn">+ إضافة صنف</button>
+
+        <div>
+
+          <h3>
+            الأصناف
+          </h3>
+
+          <p>
+            الصورة، الاسم، السعر، الوصف،
+            القسم والحالة.
+          </p>
+
+        </div>
+
+
+        <button
+          class="primary"
+          id="addProductBtn"
+        >
+          + إضافة صنف
+        </button>
+
       </div>
-      <div id="productsGrid" class="grid"></div>
+
+
+      <div
+        id="productsGrid"
+        class="grid"
+      ></div>
+
     </section>
 
-    <section id="settingsPage" class="page hidden">
+
+
+    <!-- =====================================
+         RESTAURANT SETTINGS
+    ====================================== -->
+
+    <section
+      id="settingsPage"
+      class="page hidden"
+    >
+
+
       <div class="panel settings-panel">
-        <h3>إعدادات المطعم</h3>
+
+        <div class="section-head">
+
+          <div>
+
+            <h3>
+              ⚙️ إعدادات المطعم
+            </h3>
+
+            <p>
+              خصص معلومات وهوية المطعم التي تظهر للزبائن.
+            </p>
+
+          </div>
+
+        </div>
+
+
+
         <form id="settingsForm">
-          <label>اسم المطعم<input id="restaurantName" required></label>
-          <label>رقم WhatsApp<input id="whatsapp" placeholder="مثال: 97059XXXXXXXX"></label>
-          <label>رقم الهاتف<input id="phone"></label>
-          <label>العنوان<input id="address"></label>
-          <label>ساعات العمل<input id="hours" placeholder="10:00 - 23:00"></label>
-          <label>رابط الشعار<input id="logoUrl" placeholder="https://..."></label>
-          <button class="primary" type="submit">حفظ الإعدادات</button>
+
+
+          <!-- ==============================
+               BASIC INFORMATION
+          =============================== -->
+
+          <div class="settings-section">
+
+            <h4>
+              🏪 المعلومات الأساسية
+            </h4>
+
+
+            <div class="settings-grid">
+
+
+              <label>
+
+                اسم المطعم
+
+                <input
+                  id="restaurantName"
+                  type="text"
+                  placeholder="مثال: CaféMenu"
+                  required
+                >
+
+              </label>
+
+
+              <label>
+
+                العبارة الرئيسية
+
+                <input
+                  id="heroTitle"
+                  type="text"
+                  placeholder="مثال: طعم يستحق التجربة"
+                >
+
+              </label>
+
+
+            </div>
+
+
+            <label>
+
+              وصف المطعم
+
+              <textarea
+                id="description"
+                rows="3"
+                placeholder="اكتب وصفاً قصيراً وجذاباً للمطعم..."
+              ></textarea>
+
+            </label>
+
+          </div>
+
+
+
+          <!-- ==============================
+               CONTACT
+          =============================== -->
+
+          <div class="settings-section">
+
+            <h4>
+              📞 معلومات التواصل
+            </h4>
+
+
+            <div class="settings-grid">
+
+
+              <label>
+
+                رقم WhatsApp
+
+                <input
+                  id="whatsapp"
+                  type="text"
+                  placeholder="مثال: 970590000000"
+                >
+
+                <span class="hint">
+                  اكتب الرقم مع مفتاح الدولة بدون +
+                </span>
+
+              </label>
+
+
+              <label>
+
+                رقم الهاتف
+
+                <input
+                  id="phone"
+                  type="text"
+                  placeholder="0590000000"
+                >
+
+              </label>
+
+
+              <label>
+
+                العنوان
+
+                <input
+                  id="address"
+                  type="text"
+                  placeholder="مثال: شارع المطعم..."
+                >
+
+              </label>
+
+
+              <label>
+
+                ساعات العمل
+
+                <input
+                  id="hours"
+                  type="text"
+                  placeholder="10:00 - 23:00"
+                >
+
+              </label>
+
+
+            </div>
+
+          </div>
+
+
+
+          <!-- ==============================
+               LOGO
+          =============================== -->
+
+          <div class="settings-section">
+
+            <h4>
+              ☕ شعار المطعم
+            </h4>
+
+
+            <label>
+
+              رابط الشعار
+
+              <input
+                id="logoUrl"
+                type="url"
+                placeholder="https://..."
+              >
+
+            </label>
+
+
+            <label>
+
+              أو اختر الشعار من الهاتف
+
+              <input
+                id="logoFile"
+                type="file"
+                accept="image/*"
+              >
+
+              <span class="hint">
+                سيتم تصغير وضغط الصورة تلقائياً.
+              </span>
+
+            </label>
+
+
+            <div class="image-preview-box">
+
+              <span>
+                معاينة الشعار
+              </span>
+
+              <div class="logo-preview">
+
+                <img
+                  id="logoPreview"
+                  src="https://placehold.co/300x300?text=Logo"
+                  alt="معاينة الشعار"
+                >
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- ==============================
+               HERO IMAGE
+          =============================== -->
+
+          <div class="settings-section">
+
+            <h4>
+              🖼️ صورة الغلاف
+            </h4>
+
+
+            <label>
+
+              رابط صورة الغلاف
+
+              <input
+                id="heroImage"
+                type="url"
+                placeholder="https://..."
+              >
+
+            </label>
+
+
+            <label>
+
+              أو اختر صورة الغلاف من الهاتف
+
+              <input
+                id="heroFile"
+                type="file"
+                accept="image/*"
+              >
+
+              <span class="hint">
+                سيتم تصغير وضغط الصورة تلقائياً لتسريع تحميل المنيو.
+              </span>
+
+            </label>
+
+
+            <div class="image-preview-box">
+
+              <span>
+                معاينة صورة الغلاف
+              </span>
+
+              <img
+                id="heroPreview"
+                class="hero-preview"
+                src="https://placehold.co/1200x600?text=Restaurant+Cover"
+                alt="معاينة الغلاف"
+              >
+
+            </div>
+
+          </div>
+
+
+
+          <!-- ==============================
+               COLORS
+          =============================== -->
+
+          <div class="settings-section">
+
+            <h4>
+              🎨 ألوان المنيو
+            </h4>
+
+
+            <div class="settings-grid">
+
+
+              <label>
+
+                اللون الرئيسي
+
+                <div class="color-control">
+
+                  <input
+                    id="primaryColor"
+                    type="color"
+                    value="#111111"
+                  >
+
+                  <input
+                    id="primaryColorText"
+                    type="text"
+                    value="#111111"
+                    placeholder="#111111"
+                  >
+
+                </div>
+
+              </label>
+
+
+              <label>
+
+                اللون الثانوي
+
+                <div class="color-control">
+
+                  <input
+                    id="secondaryColor"
+                    type="color"
+                    value="#f59e0b"
+                  >
+
+                  <input
+                    id="secondaryColorText"
+                    type="text"
+                    value="#f59e0b"
+                    placeholder="#f59e0b"
+                  >
+
+                </div>
+
+              </label>
+
+
+            </div>
+
+          </div>
+
+
+
+          <!-- ==============================
+               SAVE
+          =============================== -->
+
+          <div class="settings-save">
+
+            <button
+              class="primary"
+              type="submit"
+            >
+              💾 حفظ إعدادات المطعم
+            </button>
+
+          </div>
+
+
         </form>
+
       </div>
+
     </section>
+
   </main>
+
 </div>
 
-<div id="modal" class="modal hidden">
+
+
+<!-- =========================================
+     MODAL
+========================================= -->
+
+<div
+  id="modal"
+  class="modal hidden"
+>
+
   <div class="modal-card">
-    <button id="closeModal" class="close">×</button>
+
+    <button
+      id="closeModal"
+      class="close"
+    >
+      ×
+    </button>
+
     <h3 id="modalTitle"></h3>
+
     <form id="entityForm"></form>
+
   </div>
+
 </div>
 
-<div id="toast" class="toast"></div>
-<script type="module" src="owner.js"></script>
+
+
+<!-- TOAST -->
+
+<div
+  id="toast"
+  class="toast"
+></div>
+
+
+
+<script
+  type="module"
+  src="owner.js"
+></script>
+
 </body>
 </html>
