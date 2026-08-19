@@ -2126,3 +2126,42 @@ $("designForm").addEventListener(
 
   }
 );
+/* =========================================
+   معاينة صورة الغلاف
+========================================= */
+
+const heroFile = $("heroFile");
+const heroPreview = $("heroPreview");
+const heroImage = $("heroImage");
+
+if (heroFile) {
+
+  heroFile.onchange = () => {
+
+    const file = heroFile.files[0];
+
+    if (!file) return;
+
+    heroPreview.src =
+      URL.createObjectURL(file);
+
+  };
+
+}
+
+if (heroImage) {
+
+  heroImage.oninput = () => {
+
+    const url =
+      heroImage.value.trim();
+
+    if (url) {
+
+      heroPreview.src = url;
+
+    }
+
+  };
+
+  }
