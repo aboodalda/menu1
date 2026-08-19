@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111111">
+  <title>CaféMenu | المنيو الإلكتروني</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">☕</div>
+      <div>
+        <h1 id="restaurantName">CaféMenu</h1>
+        <span>منيو إلكتروني</span>
+      </div>
+    </div>
+    <button class="icon-btn" id="themeBtn" aria-label="تغيير المظهر">🌙</button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <span class="badge">🔥 عروض مميزة يومياً</span>
+        <h2>طعم يستحق التجربة</h2>
+        <p>اكتشف أشهى الوجبات والحلويات والمشروبات في مكان واحد.</p>
+        <button class="primary-btn" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">
+          تصفح المنيو
+        </button>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">الأكثر طلباً</span>
+          <h2>اختياراتنا المميزة ⭐</h2>
+        </div>
+      </div>
+      <div class="products" id="featuredProducts"></div>
+    </section>
+
+    <section class="section" id="menu">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">MENU</span>
+          <h2>المنيو</h2>
+        </div>
+      </div>
+      <div class="categories" id="categories"></div>
+      <div class="search-wrap">
+        <span>🔍</span>
+        <input id="searchInput" type="search" placeholder="ابحث عن وجبة أو مشروب...">
+      </div>
+      <div class="products" id="products"></div>
+    </section>
+  </main>
+
+  <button class="cart-float" id="cartBtn">🛒 <span>السلة</span> <b id="cartCount">0</b></button>
+
+  <div class="modal hidden" id="cartModal">
+    <div class="modal-card">
+      <button class="close-btn" id="closeCart">×</button>
+      <h2>طلبك 🛒</h2>
+      <div id="cartItems"></div>
+      <div class="cart-total">
+        <span>الإجمالي</span>
+        <strong id="cartTotal">0 ₪</strong>
+      </div>
+      <button class="whatsapp-btn" id="whatsappBtn">إرسال الطلب عبر WhatsApp</button>
+    </div>
+  </div>
+
+  <footer>
+    <div>
+      <strong id="footerName">CaféMenu</strong>
+      <p>أشهى الأطباق... في انتظارك ❤️</p>
+    </div>
+    <div class="footer-links">
+      <span>📍 موقع المطعم</span>
+      <span>📞 059 000 0000</span>
+      <span>🕐 يومياً 10:00 - 23:00</span>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
