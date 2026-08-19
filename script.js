@@ -131,7 +131,35 @@ try {
 
 }
 
+/* =========================
+   DESIGN SETTINGS
+========================= */
 
+try {
+
+  const designRef =
+    doc(db, "settings", "design");
+
+  const designSnap =
+    await getDoc(designRef);
+
+  if (designSnap.exists()) {
+
+    restaurant = {
+      ...restaurant,
+      ...designSnap.data()
+    };
+
+  }
+
+} catch (designError) {
+
+  console.warn(
+    "Design settings could not be loaded:",
+    designError
+  );
+
+}
 
     /* =========================
        CATEGORIES + PRODUCTS
