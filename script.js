@@ -1,111 +1,345 @@
-const products = [
-  {id:1,name:'برجر كلاسيك',cat:'وجبات رئيسية',price:25,img:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=80',desc:'برجر لحم طازج مع الجبنة والخضار',featured:true},
-  {id:2,name:'بيتزا خضار',cat:'بيتزا',price:28,img:'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=900&q=80',desc:'صلصة طماطم، جبنة ومجموعة خضار طازجة',featured:true},
-  {id:3,name:'كريب نوتيلا',cat:'حلويات',price:18,img:'https://images.unsplash.com/photo-1624353365286-3f8d62daad51?auto=format&fit=crop&w=900&q=80',desc:'كريب طري محشو بالنوتيلا مع لمسة شوكولاتة',featured:true},
-  {id:4,name:'وجبة زنجر',cat:'وجبات رئيسية',price:24,img:'https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=900&q=80',desc:'دجاج مقرمش، صوص خاص، بطاطا ومشروب'},
-  {id:5,name:'بطاطا بالجبنة',cat:'مقبلات',price:12,img:'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=900&q=80',desc:'بطاطا مقرمشة مع الجبنة والصوص'},
-  {id:6,name:'كوكتيل فواكه',cat:'مشروبات',price:15,img:'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=900&q=80',desc:'مزيج منعش من الفواكه الطازجة'},
-  {id:7,name:'تشيز كيك',cat:'حلويات',price:16,img:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=900&q=80',desc:'تشيز كيك كريمي مع صوص الفراولة'},
-  {id:8,name:'كابتشينو',cat:'مشروبات',price:10,img:'https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&w=900&q=80',desc:'قهوة إسبريسو مع حليب ورغوة ناعمة'}
-];
+const firebaseConfig = {
+  apiKey: "AIzaSyCsS0rR0wOz3mGBszmtKwPXQZi4pFVcukA",
+  authDomain: "cafemenu-3ff9a.firebaseapp.com",
+  projectId: "cafemenu-3ff9a",
+  storageBucket: "cafemenu-3ff9a.firebasestorage.app",
+  messagingSenderId: "52378316579",
+  appId: "1:52378316579:web:8512b57f8a9c6f64b8a696"
+};
 
-let activeCategory = 'الكل';
-let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+let products = [];
+let categories = [];
+let activeCategory = "الكل";
+let cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
-const categories = ['الكل', ...new Set(products.map(p => p.cat))];
+async function loadFirebaseData() {
+  try {
+    const { initializeApp } =
+      await import("https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js");
 
-function renderCategories(){
-  document.getElementById('categories').innerHTML = categories.map(c =>
-    `<button class="category ${c===activeCategory?'active':''}" onclick="setCategory('${c}')">${c}</button>`
-  ).join('');
+    const { getFirestore, collection, getDocs } =
+      await import("https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js");
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const [categoriesSnap, productsSnap] = await Promise.all([
+      getDocs(collection(db, "categories")),
+      getDocs(collection(db, "products"))
+    ]);
+
+    categories = categoriesSnap.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    products = productsSnap.docs
+      .map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }))
+      .filter(p => p.available !== false);
+
+    render();
+  } catch (error) {
+    console.error("Firebase Error:", error);
+
+    document.getElementById("products").innerHTML =
+      "<p>حدث خطأ أثناء تحميل المنيو.</p>";
+
+    document.getElementById("featuredProducts").innerHTML =
+      "<p>تعذر تحميل الأصناف.</p>";
+  }
 }
 
-function card(p){
-  return `<article class="product">
-    <img src="${p.img}" alt="${p.name}" loading="lazy">
-    <div class="product-body">
-      <h3>${p.name}</h3>
-      <p>${p.desc}</p>
-      <div class="product-bottom">
-        <span class="price">${p.price} ₪</span>
-        <button class="add-btn" onclick="addToCart(${p.id})">+ أضف</button>
+function renderCategories() {
+  const container = document.getElementById("categories");
+
+  const allCategories = [
+    { id: "all", name: "الكل" },
+    ...categories
+  ];
+
+  container.innerHTML = allCategories.map(c => `
+    <button
+      class="category ${c.name === activeCategory ? "active" : ""}"
+      onclick="setCategory('${c.name.replace(/'/g, "\\'")}')"
+    >
+      ${c.name}
+    </button>
+  `).join("");
+}
+
+function card(p) {
+  return `
+    <article class="product">
+      <img
+        src="${p.image || "https://placehold.co/900x600?text=CafeMenu"}"
+        alt="${p.name || ""}"
+        loading="lazy"
+      >
+
+      <div class="product-body">
+
+        <h3>${p.name || ""}</h3>
+
+        <p>${p.description || "بدون وصف"}</p>
+
+        <div class="product-bottom">
+
+          <span class="price">
+            ${Number(p.price || 0)} ₪
+          </span>
+
+          <button
+            class="add-btn"
+            onclick="addToCart('${p.id}')"
+          >
+            + أضف
+          </button>
+
+        </div>
+
       </div>
-    </div>
-  </article>`;
+    </article>
+  `;
 }
 
-function render(){
-  const q = document.getElementById('searchInput').value.trim().toLowerCase();
-  const list = products.filter(p =>
-    (activeCategory === 'الكل' || p.cat === activeCategory) &&
-    (!q || p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q))
-  );
-  document.getElementById('products').innerHTML = list.length ? list.map(card).join('') : '<p>لا توجد نتائج.</p>';
-  document.getElementById('featuredProducts').innerHTML = products.filter(p=>p.featured).map(card).join('');
+function render() {
+
+  const searchInput = document.getElementById("searchInput");
+
+  const q = searchInput
+    ? searchInput.value.trim().toLowerCase()
+    : "";
+
+  const list = products.filter(p => {
+
+    const categoryMatch =
+      activeCategory === "الكل" ||
+      p.categoryId === activeCategory ||
+      categories.some(
+        c => c.id === p.categoryId && c.name === activeCategory
+      );
+
+    const searchMatch =
+      !q ||
+      (p.name || "").toLowerCase().includes(q) ||
+      (p.description || "").toLowerCase().includes(q);
+
+    return categoryMatch && searchMatch;
+  });
+
+  document.getElementById("products").innerHTML =
+    list.length
+      ? list.map(card).join("")
+      : "<p>لا توجد أصناف في هذا القسم.</p>";
+
+  const featured = products.filter(p => p.featured === true);
+
+  document.getElementById("featuredProducts").innerHTML =
+    featured.length
+      ? featured.map(card).join("")
+      : "<p>لا توجد أصناف مميزة حالياً.</p>";
+
   renderCategories();
+
   updateCart();
 }
 
-function setCategory(c){ activeCategory=c; render(); }
+function setCategory(category) {
+  activeCategory = category;
+  render();
+}
 
-function addToCart(id){
-  const item = cart.find(x=>x.id===id);
-  if(item) item.qty++;
-  else cart.push({id,qty:1});
+function addToCart(id) {
+
+  const item = cart.find(x => String(x.id) === String(id));
+
+  if (item) {
+    item.qty++;
+  } else {
+    cart.push({
+      id: id,
+      qty: 1
+    });
+  }
+
   saveCart();
 }
 
-function removeFromCart(id){
-  cart = cart.filter(x=>x.id!==id);
+function removeFromCart(id) {
+
+  cart = cart.filter(
+    x => String(x.id) !== String(id)
+  );
+
   saveCart();
 }
 
-function saveCart(){
-  localStorage.setItem('cart',JSON.stringify(cart));
+function saveCart() {
+
+  localStorage.setItem(
+    "cart",
+    JSON.stringify(cart)
+  );
+
   updateCart();
 }
 
-function updateCart(){
-  const count = cart.reduce((s,x)=>s+x.qty,0);
-  document.getElementById('cartCount').textContent=count;
-  const items = document.getElementById('cartItems');
-  if(!cart.length){
-    items.innerHTML='<p style="color:var(--muted)">السلة فارغة حالياً.</p>';
-    document.getElementById('cartTotal').textContent='0 ₪';
+function updateCart() {
+
+  const count = cart.reduce(
+    (sum, item) => sum + item.qty,
+    0
+  );
+
+  document.getElementById("cartCount").textContent = count;
+
+  const items = document.getElementById("cartItems");
+
+  if (!cart.length) {
+
+    items.innerHTML =
+      '<p style="color:var(--muted)">السلة فارغة حالياً.</p>';
+
+    document.getElementById("cartTotal").textContent = "0 ₪";
+
     return;
   }
-  let total=0;
-  items.innerHTML=cart.map(x=>{
-    const p=products.find(v=>v.id===x.id);
-    total += p.price*x.qty;
-    return `<div class="cart-row"><div><strong>${p.name}</strong><br><small>${x.qty} × ${p.price} ₪</small></div><button onclick="removeFromCart(${p.id})">حذف</button></div>`;
-  }).join('');
-  document.getElementById('cartTotal').textContent=total+' ₪';
+
+  let total = 0;
+
+  const validCart = [];
+
+  items.innerHTML = cart.map(item => {
+
+    const product = products.find(
+      p => String(p.id) === String(item.id)
+    );
+
+    if (!product) return "";
+
+    validCart.push(item);
+
+    total += Number(product.price || 0) * item.qty;
+
+    return `
+      <div class="cart-row">
+
+        <div>
+          <strong>${product.name}</strong>
+          <br>
+          <small>
+            ${item.qty} × ${product.price} ₪
+          </small>
+        </div>
+
+        <button onclick="removeFromCart('${product.id}')">
+          حذف
+        </button>
+
+      </div>
+    `;
+
+  }).join("");
+
+  cart = validCart;
+
+  localStorage.setItem(
+    "cart",
+    JSON.stringify(cart)
+  );
+
+  document.getElementById("cartTotal").textContent =
+    total + " ₪";
 }
 
-document.getElementById('searchInput').addEventListener('input', render);
-document.getElementById('cartBtn').onclick=()=>document.getElementById('cartModal').classList.remove('hidden');
-document.getElementById('closeCart').onclick=()=>document.getElementById('cartModal').classList.add('hidden');
+document
+  .getElementById("searchInput")
+  .addEventListener("input", render);
 
-document.getElementById('themeBtn').onclick=()=>{
-  document.body.classList.toggle('dark');
-  document.getElementById('themeBtn').textContent=document.body.classList.contains('dark')?'☀️':'🌙';
-  localStorage.setItem('dark',document.body.classList.contains('dark'));
-};
-if(localStorage.getItem('dark')==='true'){
-  document.body.classList.add('dark');
-  document.getElementById('themeBtn').textContent='☀️';
+document
+  .getElementById("cartBtn")
+  .onclick = () => {
+    document
+      .getElementById("cartModal")
+      .classList.remove("hidden");
+  };
+
+document
+  .getElementById("closeCart")
+  .onclick = () => {
+    document
+      .getElementById("cartModal")
+      .classList.add("hidden");
+  };
+
+document
+  .getElementById("themeBtn")
+  .onclick = () => {
+
+    document.body.classList.toggle("dark");
+
+    document.getElementById("themeBtn").textContent =
+      document.body.classList.contains("dark")
+        ? "☀️"
+        : "🌙";
+
+    localStorage.setItem(
+      "dark",
+      document.body.classList.contains("dark")
+    );
+  };
+
+if (localStorage.getItem("dark") === "true") {
+
+  document.body.classList.add("dark");
+
+  document.getElementById("themeBtn").textContent =
+    "☀️";
 }
 
-document.getElementById('whatsappBtn').onclick=()=>{
-  if(!cart.length) return alert('السلة فارغة');
-  const lines=cart.map(x=>{
-    const p=products.find(v=>v.id===x.id);
-    return `• ${p.name} × ${x.qty} = ${p.price*x.qty} ₪`;
-  });
-  const total=cart.reduce((s,x)=>s+products.find(p=>p.id===x.id).price*x.qty,0);
-  const msg=`مرحباً، أريد طلب:%0A${lines.join('%0A')}%0A%0Aالإجمالي: ${total} ₪`;
-  window.open(`https://wa.me/970590000000?text=${msg}`,'_blank');
-};
+document
+  .getElementById("whatsappBtn")
+  .onclick = () => {
 
-render();
+    if (!cart.length) {
+      alert("السلة فارغة");
+      return;
+    }
+
+    const lines = [];
+
+    let total = 0;
+
+    cart.forEach(item => {
+
+      const product = products.find(
+        p => String(p.id) === String(item.id)
+      );
+
+      if (!product) return;
+
+      const subtotal =
+        Number(product.price || 0) * item.qty;
+
+      total += subtotal;
+
+      lines.push(
+        `• ${product.name} × ${item.qty} = ${subtotal} ₪`
+      );
+    });
+
+    const msg =
+      `مرحباً، أريد طلب:%0A` +
+      lines.join("%0A") +
+      `%0A%0Aالإجمالي: ${total} ₪`;
+
+    window.open(
+      `https://wa.me/970590000000?text=${msg}`,
+      "_blank"
+    );
+  };
+
+loadFirebaseData();
