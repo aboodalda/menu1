@@ -3,87 +3,573 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#111111">
+  <meta name="theme-color" content="#17130f">
+
   <title>CaféMenu | المنيو الإلكتروني</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+
+  <!-- =========================
+       HEADER
+  ========================== -->
+
   <header class="topbar">
+
     <div class="brand">
-      <div class="logo">☕</div>
-      <div>
-        <h1 id="restaurantName">CaféMenu</h1>
-        <span>منيو إلكتروني</span>
+
+      <div class="logo" id="restaurantLogo">
+        ☕
       </div>
+
+      <div class="brand-info">
+
+        <h1 id="restaurantName">
+          CaféMenu
+        </h1>
+
+        <span id="restaurantTagline">
+          منيو إلكتروني
+        </span>
+
+      </div>
+
     </div>
-    <button class="icon-btn" id="themeBtn" aria-label="تغيير المظهر">🌙</button>
+
+
+    <div class="header-actions">
+
+      <button
+        class="icon-btn"
+        id="themeBtn"
+        aria-label="تغيير المظهر"
+      >
+        🌙
+      </button>
+
+      <button
+        class="icon-btn mobile-cart-btn"
+        id="cartBtnTop"
+        aria-label="السلة"
+      >
+        🛒
+        <b id="cartCountTop">0</b>
+      </button>
+
+    </div>
+
   </header>
 
+
+
   <main>
+
+    <!-- =========================
+         HERO
+    ========================== -->
+
     <section class="hero">
+
+      <div class="hero-overlay"></div>
+
       <div class="hero-content">
-        <span class="badge">🔥 عروض مميزة يومياً</span>
-        <h2>طعم يستحق التجربة</h2>
-        <p>اكتشف أشهى الوجبات والحلويات والمشروبات في مكان واحد.</p>
-        <button class="primary-btn" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">
-          تصفح المنيو
+
+        <span class="hero-badge">
+          ✨ أهلاً بك في مطعمنا
+        </span>
+
+        <h2 id="heroTitle">
+          طعم يستحق التجربة
+        </h2>
+
+        <p id="heroDescription">
+          اكتشف أشهى الوجبات والحلويات والمشروبات في مكان واحد.
+        </p>
+
+        <div class="hero-buttons">
+
+          <button
+            class="primary-btn"
+            onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})"
+          >
+            🍽️ تصفح المنيو
+          </button>
+
+          <button
+            class="secondary-btn"
+            onclick="document.getElementById('info').scrollIntoView({behavior:'smooth'})"
+          >
+            معلومات المطعم
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="hero-scroll">
+        ↓
+      </div>
+
+    </section>
+
+
+
+    <!-- =========================
+         QUICK INFO
+    ========================== -->
+
+    <section class="quick-info" id="info">
+
+      <div class="info-card">
+
+        <span>⭐</span>
+
+        <div>
+          <small>تقييمنا</small>
+          <strong>4.9 / 5</strong>
+        </div>
+
+      </div>
+
+
+      <div class="info-card">
+
+        <span>🕐</span>
+
+        <div>
+          <small>أوقات العمل</small>
+          <strong id="restaurantHours">
+            يومياً
+          </strong>
+        </div>
+
+      </div>
+
+
+      <div class="info-card">
+
+        <span>📍</span>
+
+        <div>
+          <small>موقعنا</small>
+          <strong id="restaurantAddress">
+            موقع المطعم
+          </strong>
+        </div>
+
+      </div>
+
+
+      <div class="info-card">
+
+        <span>📞</span>
+
+        <div>
+          <small>اتصل بنا</small>
+          <strong id="restaurantPhone">
+            059 000 0000
+          </strong>
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- =========================
+         CATEGORIES
+    ========================== -->
+
+    <section class="section categories-section">
+
+      <div class="section-heading">
+
+        <div>
+
+          <span class="eyebrow">
+            EXPLORE
+          </span>
+
+          <h2>
+            ماذا تشتهي اليوم؟
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="categories"
+        id="categories"
+      ></div>
+
+    </section>
+
+
+
+    <!-- =========================
+         FEATURED
+    ========================== -->
+
+    <section class="section featured-section">
+
+      <div class="section-heading">
+
+        <div>
+
+          <span class="eyebrow">
+            OUR SPECIAL
+          </span>
+
+          <h2>
+            اختياراتنا المميزة ⭐
+          </h2>
+
+          <p>
+            الأصناف التي يحبها زبائننا أكثر.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="products"
+        id="featuredProducts"
+      ></div>
+
+    </section>
+
+
+
+    <!-- =========================
+         OFFERS
+    ========================== -->
+
+    <section class="offers-section">
+
+      <div class="offer-content">
+
+        <span>
+          🔥 لفترة محدودة
+        </span>
+
+        <h2>
+          عروضنا الخاصة
+        </h2>
+
+        <p>
+          لا تفوّت عروض اليوم واستمتع بأشهى اختياراتنا.
+        </p>
+
+        <button
+          onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})"
+        >
+          اكتشف العروض
         </button>
+
       </div>
+
     </section>
 
-    <section class="section">
-      <div class="section-title">
-        <div>
-          <span class="eyebrow">الأكثر طلباً</span>
-          <h2>اختياراتنا المميزة ⭐</h2>
-        </div>
-      </div>
-      <div class="products" id="featuredProducts"></div>
-    </section>
 
-    <section class="section" id="menu">
-      <div class="section-title">
+
+    <!-- =========================
+         MENU
+    ========================== -->
+
+    <section
+      class="section menu-section"
+      id="menu"
+    >
+
+      <div class="section-heading">
+
         <div>
-          <span class="eyebrow">MENU</span>
-          <h2>المنيو</h2>
+
+          <span class="eyebrow">
+            OUR MENU
+          </span>
+
+          <h2>
+            المنيو
+          </h2>
+
+          <p>
+            اختر ما يناسب ذوقك واستمتع بتجربة مميزة.
+          </p>
+
         </div>
+
       </div>
-      <div class="categories" id="categories"></div>
+
+
+      <!-- Search -->
+
       <div class="search-wrap">
-        <span>🔍</span>
-        <input id="searchInput" type="search" placeholder="ابحث عن وجبة أو مشروب...">
+
+        <span>
+          🔍
+        </span>
+
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="ابحث عن وجبة أو مشروب..."
+          autocomplete="off"
+        >
+
       </div>
-      <div class="products" id="products"></div>
+
+
+      <!-- Categories -->
+
+      <div
+        class="categories menu-categories"
+        id="menuCategories"
+      ></div>
+
+
+      <!-- Products -->
+
+      <div
+        class="products"
+        id="products"
+      ></div>
+
     </section>
+
+
+
+    <!-- =========================
+         RESTAURANT CTA
+    ========================== -->
+
+    <section class="restaurant-cta">
+
+      <div>
+
+        <span>
+          ❤️ ننتظركم
+        </span>
+
+        <h2>
+          تجربة تستحق التكرار
+        </h2>
+
+        <p>
+          زورونا واستمتعوا بأشهى الأطباق والمشروبات.
+        </p>
+
+      </div>
+
+
+      <div class="cta-buttons">
+
+        <a
+          href="#"
+          id="phoneLink"
+          class="cta-btn"
+        >
+          📞 اتصل بنا
+        </a>
+
+        <a
+          href="#"
+          id="whatsappLink"
+          class="cta-btn whatsapp"
+          target="_blank"
+          rel="noopener"
+        >
+          💬 واتساب
+        </a>
+
+      </div>
+
+    </section>
+
   </main>
 
-  <button class="cart-float" id="cartBtn">🛒 <span>السلة</span> <b id="cartCount">0</b></button>
 
-  <div class="modal hidden" id="cartModal">
+
+  <!-- =========================
+       FLOATING CART
+  ========================== -->
+
+  <button
+    class="cart-float"
+    id="cartBtn"
+  >
+
+    🛒
+
+    <span>
+      السلة
+    </span>
+
+    <b id="cartCount">
+      0
+    </b>
+
+  </button>
+
+
+
+  <!-- =========================
+       CART MODAL
+  ========================== -->
+
+  <div
+    class="modal hidden"
+    id="cartModal"
+  >
+
     <div class="modal-card">
-      <button class="close-btn" id="closeCart">×</button>
-      <h2>طلبك 🛒</h2>
-      <div id="cartItems"></div>
-      <div class="cart-total">
-        <span>الإجمالي</span>
-        <strong id="cartTotal">0 ₪</strong>
+
+      <button
+        class="close-btn"
+        id="closeCart"
+      >
+        ×
+      </button>
+
+
+      <div class="modal-heading">
+
+        <span>
+          🛒
+        </span>
+
+        <div>
+
+          <span class="eyebrow">
+            YOUR ORDER
+          </span>
+
+          <h2>
+            طلبك
+          </h2>
+
+        </div>
+
       </div>
-      <button class="whatsapp-btn" id="whatsappBtn">إرسال الطلب عبر WhatsApp</button>
+
+
+      <div id="cartItems"></div>
+
+
+      <div class="cart-total">
+
+        <span>
+          الإجمالي
+        </span>
+
+        <strong id="cartTotal">
+          0 ₪
+        </strong>
+
+      </div>
+
+
+      <button
+        class="whatsapp-btn"
+        id="whatsappBtn"
+      >
+        💬 إرسال الطلب عبر WhatsApp
+      </button>
+
     </div>
+
   </div>
 
+
+
+  <!-- =========================
+       FOOTER
+  ========================== -->
+
   <footer>
-    <div>
-      <strong id="footerName">CaféMenu</strong>
-      <p>أشهى الأطباق... في انتظارك ❤️</p>
+
+    <div class="footer-main">
+
+      <div class="footer-brand">
+
+        <div
+          class="logo"
+          id="footerLogo"
+        >
+          ☕
+        </div>
+
+        <div>
+
+          <strong id="footerName">
+            CaféMenu
+          </strong>
+
+          <p>
+            أشهى الأطباق... في انتظارك ❤️
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="footer-links">
+
+        <span id="footerAddress">
+          📍 موقع المطعم
+        </span>
+
+        <span id="footerPhone">
+          📞 059 000 0000
+        </span>
+
+        <span id="footerHours">
+          🕐 يومياً 10:00 - 23:00
+        </span>
+
+      </div>
+
     </div>
-    <div class="footer-links">
-      <span>📍 موقع المطعم</span>
-      <span>📞 059 000 0000</span>
-      <span>🕐 يومياً 10:00 - 23:00</span>
+
+
+    <div class="footer-bottom">
+
+      <span>
+        © 2026
+        <strong id="copyrightName">
+          CaféMenu
+        </strong>
+      </span>
+
+      <span>
+        المنيو الإلكتروني
+      </span>
+
     </div>
+
   </footer>
 
-  <script src="script.js"></script>
+
+
+  <!-- مهم جداً:
+       script.js الجديد يستخدم Firebase Modules -->
+
+  <script
+    type="module"
+    src="script.js"
+  ></script>
+
 </body>
 </html>
