@@ -1,89 +1,10 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#111111">
-  <title>CaféMenu | المنيو الإلكتروني</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="logo">☕</div>
-      <div>
-        <h1 id="restaurantName">CaféMenu</h1>
-        <span>منيو إلكتروني</span>
-      </div>
-    </div>
-    <button class="icon-btn" id="themeBtn" aria-label="تغيير المظهر">🌙</button>
-  </header>
-
-  <main>
-    <section class="hero">
-      <div class="hero-content">
-        <span class="badge">🔥 عروض مميزة يومياً</span>
-        <h2>طعم يستحق التجربة</h2>
-        <p>اكتشف أشهى الوجبات والحلويات والمشروبات في مكان واحد.</p>
-        <button class="primary-btn" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">
-          تصفح المنيو
-        </button>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-title">
-        <div>
-          <span class="eyebrow">الأكثر طلباً</span>
-          <h2>اختياراتنا المميزة ⭐</h2>
-        </div>
-      </div>
-      <div class="products" id="featuredProducts"></div>
-    </section>
-
-    <section class="section" id="menu">
-      <div class="section-title">
-        <div>
-          <span class="eyebrow">MENU</span>
-          <h2>المنيو</h2>
-        </div>
-      </div>
-      <div class="categories" id="categories"></div>
-      <div class="search-wrap">
-        <span>🔍</span>
-        <input id="searchInput" type="search" placeholder="ابحث عن وجبة أو مشروب...">
-      </div>
-      <div class="products" id="products"></div>
-    </section>
-  </main>
-
-  <button class="cart-float" id="cartBtn">🛒 <span>السلة</span> <b id="cartCount">0</b></button>
-
-  <div class="modal hidden" id="cartModal">
-    <div class="modal-card">
-      <button class="close-btn" id="closeCart">×</button>
-      <h2>طلبك 🛒</h2>
-      <div id="cartItems"></div>
-      <div class="cart-total">
-        <span>الإجمالي</span>
-        <strong id="cartTotal">0 ₪</strong>
-      </div>
-      <button class="whatsapp-btn" id="whatsappBtn">إرسال الطلب عبر WhatsApp</button>
-    </div>
-  </div>
-
-  <footer>
-    <div>
-      <strong id="footerName">CaféMenu</strong>
-      <p>أشهى الأطباق... في انتظارك ❤️</p>
-    </div>
-    <div class="footer-links">
-      <span>📍 موقع المطعم</span>
-      <span>📞 059 000 0000</span>
-      <span>🕐 يومياً 10:00 - 23:00</span>
-    </div>
-  </footer>
-
-  <script src="script.js"></script>
-</body>
-</html>
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CaféMenu Admin</title><link rel="stylesheet" href="style.css"></head><body>
+<div id="login" class="login"><div class="box"><div class="logo">☕</div><h1>CaféMenu</h1><p>تسجيل دخول لوحة التحكم</p><form id="loginForm"><input id="email" type="email" placeholder="البريد الإلكتروني" required><input id="password" type="password" placeholder="كلمة المرور" required><button>دخول</button><div id="err"></div></form></div></div>
+<div id="app" class="hidden"><aside><h2>☕ CaféMenu</h2><button class="nav active" data-page="dashboard">📊 الرئيسية</button><button class="nav" data-page="categories">📂 الأقسام</button><button class="nav" data-page="products">🍔 الأصناف</button><button class="nav" data-page="settings">⚙️ الإعدادات</button><button id="logout" class="logout">تسجيل الخروج</button></aside><main><header><div><small>لوحة التحكم</small><h1 id="title">الرئيسية</h1></div><a href="../" target="_blank">👁️ عرض المنيو</a></header>
+<section id="dashboard" class="page"><div class="stats"><div>📂<b id="sc">0</b><small>الأقسام</small></div><div>🍔<b id="sp">0</b><small>الأصناف</small></div><div>🟢<b id="sa">0</b><small>متوفر</small></div><div>⭐<b id="sf">0</b><small>مميز</small></div></div></section>
+<section id="categories" class="page hidden"><div class="bar"><div><h2>الأقسام</h2><p>إضافة وتعديل وحذف الأقسام وصورها.</p></div><button onclick="categoryModal()">+ إضافة قسم</button></div><div id="catGrid" class="grid"></div></section>
+<section id="products" class="page hidden"><div class="bar"><div><h2>الأصناف</h2><p>إضافة صورة، سعر، وصف، قسم وحالة الصنف.</p></div><button onclick="productModal()">+ إضافة صنف</button></div><div id="prodGrid" class="grid"></div></section>
+<section id="settings" class="page hidden"><div class="panel"><h2>إعدادات المطعم</h2><form id="settingsForm"><label>اسم المطعم<input id="rname"></label><label>WhatsApp<input id="wa"></label><label>الهاتف<input id="phone"></label><label>العنوان<input id="address"></label><label>ساعات العمل<input id="hours"></label><button>حفظ</button></form></div></section>
+</main></div>
+<div id="modal" class="modal hidden"><div class="modalbox"><button class="x" onclick="closeModal()">×</button><h2 id="mtitle"></h2><form id="form"></form></div></div>
+<script type="module" src="app.js"></script></body></html>
