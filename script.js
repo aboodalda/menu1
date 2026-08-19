@@ -62,31 +62,74 @@ async function loadFirebaseData() {
        RESTAURANT SETTINGS
     ========================= */
 
-    try {
+try {
 
-      const restaurantRef =
-        doc(db, "settings", "restaurant");
+  const restaurantRef =
+    doc(db, "settings", "restaurant");
 
-      const restaurantSnap =
-        await getDoc(restaurantRef);
+  const restaurantSnap =
+    await getDoc(restaurantRef);
 
-      if (restaurantSnap.exists()) {
+  if (restaurantSnap.exists()) {
 
-        restaurant = {
-          ...restaurant,
-          ...restaurantSnap.data()
-        };
+    const data = restaurantSnap.data();
 
-      }
+    restaurant = {
+      ...restaurant,
 
-    } catch (settingsError) {
+      name:
+        data.restaurantName ||
+        data.name ||
+        restaurant.name,
 
-      console.warn(
-        "Restaurant settings could not be loaded:",
-        settingsError
-      );
+      tagline:
+        data.tagline ||
+        restaurant.tagline,
 
-    }
+      description:
+        data.description ||
+        restaurant.description,
+
+      heroTitle:
+        data.heroTitle ||
+        restaurant.heroTitle,
+
+      heroImage:
+        data.heroImage ||
+        restaurant.heroImage,
+
+      logo:
+        data.logoUrl ||
+        data.logo ||
+        restaurant.logo,
+
+      phone:
+        data.phone ||
+        restaurant.phone,
+
+      whatsapp:
+        data.whatsapp ||
+        restaurant.whatsapp,
+
+      address:
+        data.address ||
+        restaurant.address,
+
+      hours:
+        data.hours ||
+        restaurant.hours
+    };
+
+  }
+
+} catch (settingsError) {
+
+  console.warn(
+    "Restaurant settings could not be loaded:",
+    settingsError
+  );
+
+}
 
 
 
