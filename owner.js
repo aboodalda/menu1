@@ -49,21 +49,19 @@ const firebaseConfig = {
 
   measurementId:
     "G-7DEMS2C6DY"
+
 };
 
 
 /* =====================================================
-   INITIALIZE
+   INITIALIZE FIREBASE
 ===================================================== */
 
-const app =
-  initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
-const auth =
-  getAuth(app);
+const auth = getAuth(app);
 
-const db =
-  getFirestore(app);
+const db = getFirestore(app);
 
 
 /* =====================================================
@@ -78,8 +76,10 @@ let editingId = null;
 
 let editingType = null;
 
+
 const $ = id =>
   document.getElementById(id);
+
 
 const placeholder =
   "https://placehold.co/900x600?text=CafeMenu";
@@ -111,13 +111,11 @@ function esc(value) {
 
 function toast(message) {
 
-  const element =
-    $("toast");
+  const element = $("toast");
 
   if (!element) return;
 
-  element.textContent =
-    message;
+  element.textContent = message;
 
   element.classList.add("show");
 
@@ -169,24 +167,19 @@ function compressImage(file) {
     }
 
 
-    const reader =
-      new FileReader();
+    const reader = new FileReader();
 
 
     reader.onload = event => {
 
-      const image =
-        new Image();
+      const image = new Image();
 
 
       image.onload = () => {
 
-        let width =
-          image.width;
+        let width = image.width;
 
-        let height =
-          image.height;
-
+        let height = image.height;
 
         const MAX_SIZE = 900;
 
@@ -198,25 +191,19 @@ function compressImage(file) {
 
           if (width > height) {
 
-            height =
-              Math.round(
-                height *
-                (MAX_SIZE / width)
-              );
+            height = Math.round(
+              height * (MAX_SIZE / width)
+            );
 
-            width =
-              MAX_SIZE;
+            width = MAX_SIZE;
 
           } else {
 
-            width =
-              Math.round(
-                width *
-                (MAX_SIZE / height)
-              );
+            width = Math.round(
+              width * (MAX_SIZE / height)
+            );
 
-            height =
-              MAX_SIZE;
+            height = MAX_SIZE;
 
           }
 
@@ -224,31 +211,24 @@ function compressImage(file) {
 
 
         const canvas =
-          document.createElement(
-            "canvas"
-          );
+          document.createElement("canvas");
 
 
-        canvas.width =
-          width;
+        canvas.width = width;
 
-        canvas.height =
-          height;
+        canvas.height = height;
 
 
         const ctx =
           canvas.getContext("2d");
 
 
-        ctx.imageSmoothingEnabled =
-          true;
+        ctx.imageSmoothingEnabled = true;
 
-        ctx.imageSmoothingQuality =
-          "high";
+        ctx.imageSmoothingQuality = "high";
 
 
-        ctx.fillStyle =
-          "#ffffff";
+        ctx.fillStyle = "#ffffff";
 
         ctx.fillRect(
           0,
@@ -267,8 +247,7 @@ function compressImage(file) {
         );
 
 
-        let quality =
-          0.72;
+        let quality = 0.72;
 
 
         let dataUrl =
@@ -279,9 +258,7 @@ function compressImage(file) {
 
 
         if (
-          !dataUrl.startsWith(
-            "data:image/webp"
-          )
+          !dataUrl.startsWith("data:image/webp")
         ) {
 
           dataUrl =
@@ -302,9 +279,7 @@ function compressImage(file) {
 
 
           if (
-            dataUrl.startsWith(
-              "data:image/webp"
-            )
+            dataUrl.startsWith("data:image/webp")
           ) {
 
             dataUrl =
@@ -326,14 +301,10 @@ function compressImage(file) {
         }
 
 
-        if (
-          dataUrl.length > 600000
-        ) {
+        if (dataUrl.length > 600000) {
 
           const smallCanvas =
-            document.createElement(
-              "canvas"
-            );
+            document.createElement("canvas");
 
 
           const ratio =
@@ -347,29 +318,22 @@ function compressImage(file) {
           smallCanvas.width =
             Math.max(
               1,
-              Math.round(
-                width * ratio
-              )
+              Math.round(width * ratio)
             );
 
 
           smallCanvas.height =
             Math.max(
               1,
-              Math.round(
-                height * ratio
-              )
+              Math.round(height * ratio)
             );
 
 
           const smallCtx =
-            smallCanvas.getContext(
-              "2d"
-            );
+            smallCanvas.getContext("2d");
 
 
-          smallCtx.fillStyle =
-            "#ffffff";
+          smallCtx.fillStyle = "#ffffff";
 
 
           smallCtx.fillRect(
@@ -397,9 +361,7 @@ function compressImage(file) {
 
 
           if (
-            !dataUrl.startsWith(
-              "data:image/webp"
-            )
+            !dataUrl.startsWith("data:image/webp")
           ) {
 
             dataUrl =
@@ -421,16 +383,13 @@ function compressImage(file) {
       image.onerror = () => {
 
         reject(
-          new Error(
-            "تعذر قراءة الصورة."
-          )
+          new Error("تعذر قراءة الصورة.")
         );
 
       };
 
 
-      image.src =
-        event.target.result;
+      image.src = event.target.result;
 
     };
 
@@ -438,9 +397,7 @@ function compressImage(file) {
     reader.onerror = () => {
 
       reject(
-        new Error(
-          "تعذر قراءة الملف."
-        )
+        new Error("تعذر قراءة الملف.")
       );
 
     };
@@ -457,46 +414,131 @@ function compressImage(file) {
    LOGIN
 ===================================================== */
 
-$("loginForm").addEventListener(
-  "submit",
-  async event => {
+const loginForm = $("loginForm");
 
-    event.preventDefault();
 
-    $("loginError").textContent =
-      "";
+if (loginForm) {
 
-    try {
+  loginForm.addEventListener(
+    "submit",
+    async event => {
 
-      await signInWithEmailAndPassword(
+      event.preventDefault();
 
-        auth,
+      const loginError = $("loginError");
 
-        $("loginEmail").value.trim(),
+      if (loginError) {
 
-        $("loginPassword").value
+        loginError.textContent = "";
 
-      );
+      }
 
-    } catch (error) {
 
-      console.error(error);
+      try {
 
-      $("loginError").textContent =
-        "بيانات الدخول غير صحيحة أو حدث خطأ.";
+        const email =
+          $("loginEmail")?.value.trim();
+
+        const password =
+          $("loginPassword")?.value;
+
+
+        if (!email || !password) {
+
+          if (loginError) {
+
+            loginError.textContent =
+              "اكتب البريد الإلكتروني وكلمة المرور.";
+
+          }
+
+          return;
+
+        }
+
+
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Login error:",
+          error
+        );
+
+
+        if (loginError) {
+
+          if (
+            error.code ===
+            "auth/invalid-credential"
+          ) {
+
+            loginError.textContent =
+              "البريد الإلكتروني أو كلمة المرور غير صحيحة.";
+
+          } else if (
+            error.code ===
+            "auth/user-not-found"
+          ) {
+
+            loginError.textContent =
+              "هذا الحساب غير موجود.";
+
+          } else if (
+            error.code ===
+            "auth/wrong-password"
+          ) {
+
+            loginError.textContent =
+              "كلمة المرور غير صحيحة.";
+
+          } else if (
+            error.code ===
+            "auth/invalid-email"
+          ) {
+
+            loginError.textContent =
+              "البريد الإلكتروني غير صحيح.";
+
+          } else {
+
+            loginError.textContent =
+              "حدث خطأ أثناء تسجيل الدخول.";
+
+          }
+
+        }
+
+      }
 
     }
+  );
 
-  }
-);
+}
 
 
 /* =====================================================
    LOGOUT
 ===================================================== */
 
-$("logoutBtn").onclick =
-  () => signOut(auth);
+const logoutBtn = $("logoutBtn");
+
+
+if (logoutBtn) {
+
+  logoutBtn.onclick = () => {
+
+    signOut(auth);
+
+  };
+
+}
 
 
 /* =====================================================
@@ -509,26 +551,51 @@ onAuthStateChanged(
 
     if (user) {
 
-      $("loginScreen")
-        .classList
-        .add("hidden");
+      const loginScreen =
+        $("loginScreen");
 
-      $("app")
-        .classList
-        .remove("hidden");
+      const appElement =
+        $("app");
+
+
+      if (loginScreen) {
+
+        loginScreen.classList.add("hidden");
+
+      }
+
+
+      if (appElement) {
+
+        appElement.classList.remove("hidden");
+
+      }
 
 
       await loadAll();
 
+
     } else {
 
-      $("app")
-        .classList
-        .add("hidden");
+      const appElement =
+        $("app");
 
-      $("loginScreen")
-        .classList
-        .remove("hidden");
+      const loginScreen =
+        $("loginScreen");
+
+
+      if (appElement) {
+
+        appElement.classList.add("hidden");
+
+      }
+
+
+      if (loginScreen) {
+
+        loginScreen.classList.remove("hidden");
+
+      }
 
     }
 
@@ -548,25 +615,23 @@ document
 
       document
         .querySelectorAll(".nav")
-        .forEach(item =>
-          item.classList.remove(
-            "active"
-          )
-        );
+        .forEach(item => {
+
+          item.classList.remove("active");
+
+        });
 
 
-      button.classList.add(
-        "active"
-      );
+      button.classList.add("active");
 
 
       document
         .querySelectorAll(".page")
-        .forEach(page =>
-          page.classList.add(
-            "hidden"
-          )
-        );
+        .forEach(page => {
+
+          page.classList.add("hidden");
+
+        });
 
 
       const page =
@@ -575,16 +640,22 @@ document
 
       if (page) {
 
-        page.classList.remove(
-          "hidden"
-        );
+        page.classList.remove("hidden");
 
       }
 
 
-      $("pageTitle").textContent =
-        button.textContent
-          .replace(/^[^ ]+ /, "");
+      const pageTitle =
+        $("pageTitle");
+
+
+      if (pageTitle) {
+
+        pageTitle.textContent =
+          button.textContent
+            .replace(/^[^ ]+ /, "");
+
+      }
 
     };
 
@@ -595,20 +666,44 @@ document
    BUTTONS
 ===================================================== */
 
-$("quickCategory").onclick =
-  () => openCategoryModal();
+if ($("quickCategory")) {
 
-$("quickProduct").onclick =
-  () => openProductModal();
+  $("quickCategory").onclick =
+    () => openCategoryModal();
 
-$("addCategoryBtn").onclick =
-  () => openCategoryModal();
+}
 
-$("addProductBtn").onclick =
-  () => openProductModal();
 
-$("closeModal").onclick =
-  closeModal;
+if ($("quickProduct")) {
+
+  $("quickProduct").onclick =
+    () => openProductModal();
+
+}
+
+
+if ($("addCategoryBtn")) {
+
+  $("addCategoryBtn").onclick =
+    () => openCategoryModal();
+
+}
+
+
+if ($("addProductBtn")) {
+
+  $("addProductBtn").onclick =
+    () => openProductModal();
+
+}
+
+
+if ($("closeModal")) {
+
+  $("closeModal").onclick =
+    closeModal;
+
+}
 
 
 /* =====================================================
@@ -663,8 +758,11 @@ async function loadAll() {
 
     render();
 
+
     await loadSettings();
+
     await loadDesign();
+
 
   } catch (error) {
 
@@ -672,6 +770,7 @@ async function loadAll() {
       "Load error:",
       error
     );
+
 
     toast(
       "تعذر تحميل البيانات"
@@ -688,234 +787,258 @@ async function loadAll() {
 
 function render() {
 
-  $("categoryCount").textContent =
-    categories.length;
+  if ($("categoryCount")) {
+
+    $("categoryCount").textContent =
+      categories.length;
+
+  }
 
 
-  $("productCount").textContent =
-    products.length;
+  if ($("productCount")) {
+
+    $("productCount").textContent =
+      products.length;
+
+  }
 
 
-  $("availableCount").textContent =
-    products.filter(
-      p =>
-        p.available !== false
-    ).length;
+  if ($("availableCount")) {
+
+    $("availableCount").textContent =
+      products.filter(
+        p =>
+          p.available !== false
+      ).length;
+
+  }
 
 
-  $("featuredCount").textContent =
-    products.filter(
-      p =>
-        p.featured === true
-    ).length;
+  if ($("featuredCount")) {
+
+    $("featuredCount").textContent =
+      products.filter(
+        p =>
+          p.featured === true
+      ).length;
+
+  }
 
 
   /* =================================
      CATEGORIES
   ================================= */
 
-  $("categoriesGrid").innerHTML =
-    categories.length
+  if ($("categoriesGrid")) {
 
-      ?
+    $("categoriesGrid").innerHTML =
+      categories.length
 
-      categories.map(category => `
+        ?
 
-        <article class="card">
+        categories.map(category => `
 
-          <img
-            class="card-image"
-            src="${esc(
-              img(category.image)
-            )}"
-            onerror="this.src='${placeholder}'"
-          >
+          <article class="card">
 
-          <div class="card-body">
+            <img
+              class="card-image"
+              src="${esc(
+                img(category.image)
+              )}"
+              onerror="this.src='${placeholder}'"
+            >
 
-            <h4>
-              ${esc(category.name)}
-            </h4>
+            <div class="card-body">
 
-            <p>
-              ${
-                products.filter(
-                  product =>
-                    product.categoryId ===
-                    category.id
-                ).length
-              }
-              أصناف
-            </p>
+              <h4>
+                ${esc(category.name)}
+              </h4>
 
-            <div class="card-actions">
+              <p>
+                ${
+                  products.filter(
+                    product =>
+                      product.categoryId ===
+                      category.id
+                  ).length
+                }
+                أصناف
+              </p>
 
-              <button
-                class="dark"
-                onclick="editCategory('${category.id}')"
-              >
-                تعديل
-              </button>
+              <div class="card-actions">
 
-              <button
-                class="danger"
-                onclick="deleteCategory('${category.id}')"
-              >
-                حذف
-              </button>
+                <button
+                  class="dark"
+                  onclick="editCategory('${category.id}')"
+                >
+                  تعديل
+                </button>
+
+                <button
+                  class="danger"
+                  onclick="deleteCategory('${category.id}')"
+                >
+                  حذف
+                </button>
+
+              </div>
 
             </div>
 
-          </div>
+          </article>
 
-        </article>
+        `).join("")
 
-      `).join("")
+        :
 
-      :
+        `
+        <div class="empty">
+          لا توجد أقسام.
+          أضف أول قسم.
+        </div>
+        `;
 
-      `
-      <div class="empty">
-        لا توجد أقسام.
-        أضف أول قسم.
-      </div>
-      `;
+  }
 
 
   /* =================================
      PRODUCTS
   ================================= */
 
-  $("productsGrid").innerHTML =
-    products.length
+  if ($("productsGrid")) {
 
-      ?
+    $("productsGrid").innerHTML =
+      products.length
 
-      products.map(product => `
+        ?
 
-        <article class="card">
+        products.map(product => `
 
-          <img
-            class="card-image"
-            src="${esc(
-              img(product.image)
-            )}"
-            onerror="this.src='${placeholder}'"
-          >
+          <article class="card">
 
-          <div class="card-body">
+            <img
+              class="card-image"
+              src="${esc(
+                img(product.image)
+              )}"
+              onerror="this.src='${placeholder}'"
+            >
 
-            <h4>
+            <div class="card-body">
 
-              ${esc(product.name)}
+              <h4>
 
-              <span class="price">
+                ${esc(product.name)}
 
-                ${Number(
-                  product.price || 0
-                )} ₪
+                <span class="price">
+
+                  ${Number(
+                    product.price || 0
+                  )} ₪
+
+                </span>
+
+              </h4>
+
+
+              <p>
+
+                ${esc(
+                  product.description ||
+                  "بدون وصف"
+                )}
+
+              </p>
+
+
+              <span
+                class="badge ${
+                  product.available !== false
+                    ? "badge-on"
+                    : "badge-off"
+                }"
+              >
+
+                ${
+                  product.available !== false
+                    ? "متوفر"
+                    : "غير متوفر"
+                }
 
               </span>
 
-            </h4>
-
-
-            <p>
-
-              ${esc(
-                product.description ||
-                "بدون وصف"
-              )}
-
-            </p>
-
-
-            <span
-              class="badge ${
-                product.available !== false
-                  ? "badge-on"
-                  : "badge-off"
-              }"
-            >
 
               ${
-                product.available !== false
-                  ? "متوفر"
-                  : "غير متوفر"
+                product.featured
+
+                  ?
+
+                  `
+                  <span class="badge badge-on">
+                    ⭐ مميز
+                  </span>
+                  `
+
+                  :
+
+                  ""
               }
 
-            </span>
+
+              ${
+                product.offer
+
+                  ?
+
+                  `
+                  <span class="badge badge-on">
+                    🔥 عرض
+                  </span>
+                  `
+
+                  :
+
+                  ""
+              }
 
 
-            ${
-              product.featured
-
-                ?
-
-                `
-                <span class="badge badge-on">
-                  ⭐ مميز
-                </span>
-                `
-
-                :
-
-                ""
-            }
-
-
-            ${
-              product.offer
-
-                ?
-
-                `
-                <span class="badge badge-on">
-                  🔥 عرض
-                </span>
-                `
-
-                :
-
-                ""
-            }
-
-
-            <div
-              class="card-actions"
-              style="margin-top:10px"
-            >
-
-              <button
-                class="dark"
-                onclick="editProduct('${product.id}')"
+              <div
+                class="card-actions"
+                style="margin-top:10px"
               >
-                تعديل
-              </button>
 
-              <button
-                class="danger"
-                onclick="deleteProduct('${product.id}')"
-              >
-                حذف
-              </button>
+                <button
+                  class="dark"
+                  onclick="editProduct('${product.id}')"
+                >
+                  تعديل
+                </button>
+
+                <button
+                  class="danger"
+                  onclick="deleteProduct('${product.id}')"
+                >
+                  حذف
+                </button>
+
+              </div>
 
             </div>
 
-          </div>
+          </article>
 
-        </article>
+        `).join("")
 
-      `).join("")
+        :
 
-      :
+        `
+        <div class="empty">
+          لا توجد أصناف.
+          أضف أول صنف.
+        </div>
+        `;
 
-      `
-      <div class="empty">
-        لا توجد أصناف.
-        أضف أول صنف.
-      </div>
-      `;
+  }
 
 }
 
@@ -924,9 +1047,7 @@ function render() {
    CATEGORY MODAL
 ===================================================== */
 
-function openCategoryModal(
-  item = null
-) {
+function openCategoryModal(item = null) {
 
   editingId =
     item?.id || null;
@@ -1024,9 +1145,7 @@ function openCategoryModal(
    PRODUCT MODAL
 ===================================================== */
 
-function openProductModal(
-  item = null
-) {
+function openProductModal(item = null) {
 
   editingId =
     item?.id || null;
@@ -1273,43 +1392,42 @@ function bindPreview() {
     $("preview");
 
 
-  if (file) {
+  if (file && preview) {
 
-    file.onchange =
-      () => {
+    file.onchange = () => {
 
-        if (
-          file.files &&
-          file.files[0]
-        ) {
+      if (
+        file.files &&
+        file.files[0]
+      ) {
 
-          preview.src =
-            URL.createObjectURL(
-              file.files[0]
-            );
+        preview.src =
+          URL.createObjectURL(
+            file.files[0]
+          );
 
-        }
+      }
 
-      };
+    };
 
   }
 
 
-  if (url) {
+  if (url && preview) {
 
-    url.oninput =
-      () => {
+    url.oninput = () => {
 
-        if (
-          url.value.trim()
-        ) {
+      const value =
+        url.value.trim();
 
-          preview.src =
-            url.value.trim();
 
-        }
+      if (value) {
 
-      };
+        preview.src = value;
+
+      }
+
+    };
 
   }
 
@@ -1322,13 +1440,21 @@ function bindPreview() {
 
 function closeModal() {
 
-  $("modal")
-    .classList
-    .add("hidden");
+  if ($("modal")) {
+
+    $("modal")
+      .classList
+      .add("hidden");
+
+  }
 
 
-  $("entityForm")
-    .innerHTML = "";
+  if ($("entityForm")) {
+
+    $("entityForm")
+      .innerHTML = "";
+
+  }
 
 
   editingId =
@@ -1344,383 +1470,376 @@ function closeModal() {
    SAVE CATEGORY / PRODUCT
 ===================================================== */
 
-$("entityForm").addEventListener(
-  "submit",
-  async event => {
+if ($("entityForm")) {
 
-    event.preventDefault();
+  $("entityForm").addEventListener(
+    "submit",
+    async event => {
+
+      event.preventDefault();
 
 
-    const saveButton =
-      $("entityForm")
-        .querySelector(
-          'button[type="submit"]'
+      const saveButton =
+        $("entityForm")
+          .querySelector(
+            'button[type="submit"]'
+          );
+
+
+      try {
+
+        let image =
+          $("fImage")?.value.trim() ||
+          "";
+
+
+        const file =
+          $("fFile")?.files?.[0];
+
+
+        if (file) {
+
+          if (saveButton) {
+
+            saveButton.disabled = true;
+
+            saveButton.textContent =
+              "جاري ضغط الصورة...";
+
+          }
+
+
+          toast(
+            "جاري تصغير وضغط الصورة..."
+          );
+
+
+          image =
+            await compressImage(file);
+
+
+          if (!image) {
+
+            throw new Error(
+              "تعذر تجهيز الصورة."
+            );
+
+          }
+
+        }
+
+
+        /* ==============================
+           CATEGORY
+        ============================== */
+
+        if (
+          editingType ===
+          "category"
+        ) {
+
+          const name =
+            $("fName")
+              .value
+              .trim();
+
+
+          if (!name) {
+
+            alert(
+              "اكتب اسم القسم أولاً."
+            );
+
+            return;
+
+          }
+
+
+          const data = {
+
+            name,
+
+            image,
+
+            updatedAt:
+              serverTimestamp()
+
+          };
+
+
+          if (editingId) {
+
+            await updateDoc(
+
+              doc(
+                db,
+                "categories",
+                editingId
+              ),
+
+              data
+
+            );
+
+          } else {
+
+            await addDoc(
+
+              collection(
+                db,
+                "categories"
+              ),
+
+              {
+
+                ...data,
+
+                createdAt:
+                  serverTimestamp()
+
+              }
+
+            );
+
+          }
+
+        }
+
+
+        /* ==============================
+           PRODUCT
+        ============================== */
+
+        else {
+
+          const name =
+            $("fName")
+              .value
+              .trim();
+
+
+          const categoryId =
+            $("fCategory")
+              .value;
+
+
+          const price =
+            Number(
+              $("fPrice")
+                .value
+            );
+
+
+          if (!name) {
+
+            alert(
+              "اكتب اسم الصنف أولاً."
+            );
+
+            return;
+
+          }
+
+
+          if (!categoryId) {
+
+            alert(
+              "اختر القسم."
+            );
+
+            return;
+
+          }
+
+
+          if (isNaN(price)) {
+
+            alert(
+              "أدخل السعر."
+            );
+
+            return;
+
+          }
+
+
+          const data = {
+
+            name,
+
+            categoryId,
+
+            price,
+
+            description:
+              $("fDescription")
+                .value
+                .trim(),
+
+            image,
+
+            available:
+              $("fAvailable")
+                .checked,
+
+            featured:
+              $("fFeatured")
+                .checked,
+
+            offer:
+              $("fOffer")
+                .checked,
+
+            updatedAt:
+              serverTimestamp()
+
+          };
+
+
+          if (editingId) {
+
+            await updateDoc(
+
+              doc(
+                db,
+                "products",
+                editingId
+              ),
+
+              data
+
+            );
+
+          } else {
+
+            await addDoc(
+
+              collection(
+                db,
+                "products"
+              ),
+
+              {
+
+                ...data,
+
+                createdAt:
+                  serverTimestamp()
+
+              }
+
+            );
+
+          }
+
+        }
+
+
+        closeModal();
+
+
+        await loadAll();
+
+
+        toast(
+          "تم الحفظ بنجاح ✅"
         );
 
 
-    try {
+      } catch (error) {
 
-      let image =
-        $("fImage")?.value.trim() ||
-        "";
-
-
-      const file =
-        $("fFile")?.files?.[0];
+        console.error(
+          "Save error:",
+          error
+        );
 
 
-      /* ==============================
-         IMAGE FROM DEVICE
-      ============================== */
+        alert(
+          "حدث خطأ أثناء الحفظ:\n" +
+          error.message
+        );
 
-      if (file) {
+
+      } finally {
 
         if (saveButton) {
 
           saveButton.disabled =
-            true;
+            false;
 
           saveButton.textContent =
-            "جاري ضغط الصورة...";
+            "حفظ";
 
         }
-
-
-        toast(
-          "جاري تصغير وضغط الصورة..."
-        );
-
-
-        image =
-          await compressImage(
-            file
-          );
-
-
-        if (!image) {
-
-          throw new Error(
-            "تعذر تجهيز الصورة."
-          );
-
-        }
-
-      }
-
-
-      /* ==============================
-         CATEGORY
-      ============================== */
-
-      if (
-        editingType ===
-        "category"
-      ) {
-
-        const name =
-          $("fName")
-            .value
-            .trim();
-
-
-        if (!name) {
-
-          alert(
-            "اكتب اسم القسم أولاً."
-          );
-
-          return;
-
-        }
-
-
-        const data = {
-
-          name,
-
-          image,
-
-          updatedAt:
-            serverTimestamp()
-
-        };
-
-
-        if (editingId) {
-
-          await updateDoc(
-
-            doc(
-              db,
-              "categories",
-              editingId
-            ),
-
-            data
-
-          );
-
-        } else {
-
-          await addDoc(
-
-            collection(
-              db,
-              "categories"
-            ),
-
-            {
-
-              ...data,
-
-              createdAt:
-                serverTimestamp()
-
-            }
-
-          );
-
-        }
-
-      }
-
-
-      /* ==============================
-         PRODUCT
-      ============================== */
-
-      else {
-
-        const name =
-          $("fName")
-            .value
-            .trim();
-
-
-        const categoryId =
-          $("fCategory")
-            .value;
-
-
-        const price =
-          Number(
-            $("fPrice")
-              .value
-          );
-
-
-        if (!name) {
-
-          alert(
-            "اكتب اسم الصنف أولاً."
-          );
-
-          return;
-
-        }
-
-
-        if (!categoryId) {
-
-          alert(
-            "اختر القسم."
-          );
-
-          return;
-
-        }
-
-
-        if (
-          isNaN(price)
-        ) {
-
-          alert(
-            "أدخل السعر."
-          );
-
-          return;
-
-        }
-
-
-        const data = {
-
-          name,
-
-          categoryId,
-
-          price,
-
-          description:
-            $("fDescription")
-              .value
-              .trim(),
-
-          image,
-
-          available:
-            $("fAvailable")
-              .checked,
-
-          featured:
-            $("fFeatured")
-              .checked,
-
-          offer:
-            $("fOffer")
-              .checked,
-
-          updatedAt:
-            serverTimestamp()
-
-        };
-
-
-        if (editingId) {
-
-          await updateDoc(
-
-            doc(
-              db,
-              "products",
-              editingId
-            ),
-
-            data
-
-          );
-
-        } else {
-
-          await addDoc(
-
-            collection(
-              db,
-              "products"
-            ),
-
-            {
-
-              ...data,
-
-              createdAt:
-                serverTimestamp()
-
-            }
-
-          );
-
-        }
-
-      }
-
-
-      closeModal();
-
-
-      await loadAll();
-
-
-      toast(
-        "تم الحفظ بنجاح ✅"
-      );
-
-
-    } catch (error) {
-
-      console.error(
-        "Save error:",
-        error
-      );
-
-
-      alert(
-        "حدث خطأ أثناء الحفظ:\n" +
-        error.message
-      );
-
-
-    } finally {
-
-      if (saveButton) {
-
-        saveButton.disabled =
-          false;
-
-        saveButton.textContent =
-          "حفظ";
 
       }
 
     }
+  );
 
-  }
-);
+}
 
 
 /* =====================================================
    EDIT CATEGORY
 ===================================================== */
 
-window.editCategory =
-  id => {
+window.editCategory = id => {
 
-    const category =
-      categories.find(
-        item =>
-          item.id === id
-      );
-
-
-    if (!category) {
-
-      toast(
-        "القسم غير موجود"
-      );
-
-      return;
-
-    }
-
-
-    openCategoryModal(
-      category
+  const category =
+    categories.find(
+      item =>
+        item.id === id
     );
 
-  };
+
+  if (!category) {
+
+    toast(
+      "القسم غير موجود"
+    );
+
+    return;
+
+  }
+
+
+  openCategoryModal(
+    category
+  );
+
+};
 
 
 /* =====================================================
    EDIT PRODUCT
 ===================================================== */
 
-window.editProduct =
-  id => {
+window.editProduct = id => {
 
-    const product =
-      products.find(
-        item =>
-          item.id === id
-      );
-
-
-    if (!product) {
-
-      toast(
-        "الصنف غير موجود"
-      );
-
-      return;
-
-    }
-
-
-    openProductModal(
-      product
+  const product =
+    products.find(
+      item =>
+        item.id === id
     );
 
-  };
+
+  if (!product) {
+
+    toast(
+      "الصنف غير موجود"
+    );
+
+    return;
+
+  }
+
+
+  openProductModal(
+    product
+  );
+
+};
 
 
 /* =====================================================
@@ -1847,54 +1966,95 @@ async function loadSettings() {
         : {};
 
 
-    $("restaurantName").value =
-      data.restaurantName ||
-      "CaféMenu";
+    if ($("restaurantName")) {
+
+      $("restaurantName").value =
+        data.restaurantName ||
+        "CaféMenu";
+
+    }
 
 
-    $("tagline").value =
-      data.tagline ||
-      "منيو إلكتروني";
+    if ($("tagline")) {
+
+      $("tagline").value =
+        data.tagline ||
+        "منيو إلكتروني";
+
+    }
 
 
-    $("heroTitle").value =
-      data.heroTitle ||
-      "طعم يستحق التجربة";
+    if ($("heroTitle")) {
+
+      $("heroTitle").value =
+        data.heroTitle ||
+        "طعم يستحق التجربة";
+
+    }
 
 
-    $("description").value =
-      data.description ||
-      "اكتشف أشهى الوجبات والحلويات والمشروبات في مكان واحد.";
+    if ($("description")) {
+
+      $("description").value =
+        data.description ||
+        "اكتشف أشهى الوجبات والحلويات والمشروبات في مكان واحد.";
+
+    }
 
 
-    $("heroImage").value =
-      data.heroImage ||
-      "";
+    if ($("heroImage")) {
+
+      $("heroImage").value =
+        data.heroImage ||
+        "";
+
+    }
 
 
-    $("logoUrl").value =
-      data.logoUrl ||
-      "";
+    if ($("logoUrl")) {
+
+      $("logoUrl").value =
+        data.logoUrl ||
+        "";
+
+    }
 
 
-    $("whatsapp").value =
-      data.whatsapp ||
-      "";
+    if ($("whatsapp")) {
+
+      $("whatsapp").value =
+        data.whatsapp ||
+        "";
+
+    }
 
 
-    $("phone").value =
-      data.phone ||
-      "";
+    if ($("phone")) {
+
+      $("phone").value =
+        data.phone ||
+        "";
+
+    }
 
 
-    $("address").value =
-      data.address ||
-      "";
+    if ($("address")) {
+
+      $("address").value =
+        data.address ||
+        "";
+
+    }
 
 
-    $("hours").value =
-      data.hours ||
-      "";
+    if ($("hours")) {
+
+      $("hours").value =
+        data.hours ||
+        "";
+
+    }
+
 
   } catch (error) {
 
@@ -1912,148 +2072,164 @@ async function loadSettings() {
    SAVE RESTAURANT SETTINGS
 ===================================================== */
 
-$("settingsForm").addEventListener(
-  "submit",
-  async event => {
+if ($("settingsForm")) {
 
-    event.preventDefault();
+  $("settingsForm").addEventListener(
+    "submit",
+    async event => {
 
-
-    try {
-
-      const data = {
-
-        restaurantName:
-          $("restaurantName")
-            .value
-            .trim(),
-
-        tagline:
-          $("tagline")
-            .value
-            .trim(),
-
-        heroTitle:
-          $("heroTitle")
-            .value
-            .trim(),
-
-        description:
-          $("description")
-            .value
-            .trim(),
-
-        heroImage:
-          $("heroImage")
-            .value
-            .trim(),
-
-        logoUrl:
-          $("logoUrl")
-            .value
-            .trim(),
-
-        whatsapp:
-          $("whatsapp")
-            .value
-            .trim(),
-
-        phone:
-          $("phone")
-            .value
-            .trim(),
-
-        address:
-          $("address")
-            .value
-            .trim(),
-
-        hours:
-          $("hours")
-            .value
-            .trim(),
-
-        updatedAt:
-          serverTimestamp()
-
-      };
+      event.preventDefault();
 
 
-      await setDoc(
+      try {
 
-        doc(
-          db,
-          "settings",
-          "restaurant"
-        ),
+        const data = {
 
-        data,
+          restaurantName:
+            $("restaurantName")?.value.trim() || "",
 
-        {
-          merge: true
-        }
+          tagline:
+            $("tagline")?.value.trim() || "",
 
-      );
+          heroTitle:
+            $("heroTitle")?.value.trim() || "",
+
+          description:
+            $("description")?.value.trim() || "",
+
+          heroImage:
+            $("heroImage")?.value.trim() || "",
+
+          logoUrl:
+            $("logoUrl")?.value.trim() || "",
+
+          whatsapp:
+            $("whatsapp")?.value.trim() || "",
+
+          phone:
+            $("phone")?.value.trim() || "",
+
+          address:
+            $("address")?.value.trim() || "",
+
+          hours:
+            $("hours")?.value.trim() || "",
+
+          updatedAt:
+            serverTimestamp()
+
+        };
 
 
-      toast(
-        "تم حفظ إعدادات المطعم ✅"
-      );
+        await setDoc(
+
+          doc(
+            db,
+            "settings",
+            "restaurant"
+          ),
+
+          data,
+
+          {
+            merge: true
+          }
+
+        );
 
 
-    } catch (error) {
-
-      console.error(
-        "Settings save error:",
-        error
-      );
+        toast(
+          "تم حفظ إعدادات المطعم ✅"
+        );
 
 
-      alert(
-        "حدث خطأ أثناء حفظ الإعدادات:\n" +
-        error.message
-      );
+      } catch (error) {
+
+        console.error(
+          "Settings save error:",
+          error
+        );
+
+
+        alert(
+          "حدث خطأ أثناء حفظ الإعدادات:\n" +
+          error.message
+        );
+
+      }
 
     }
-
-  }
-);
-/* =========================================
-   تخصيص المنيو
-========================================= */
-
-async function loadDesignSettings() {
-
-  const designRef = doc(
-    db,
-    "settings",
-    "design"
   );
 
-  const designSnap = await getDoc(designRef);
-
-  const data = designSnap.exists()
-    ? designSnap.data()
-    : {};
-
-  $("primaryColor").value =
-    data.primaryColor || "#111111";
-
-  $("buttonColor").value =
-    data.buttonColor || "#111111";
-
-  $("heroTitle").value =
-    data.heroTitle || "";
-
-  $("heroDescription").value =
-    data.heroDescription || "";
-
-  $("heroImage").value =
-    data.heroImage || "";
 }
 
 
-/* تحميل التخصيص عند تسجيل الدخول */
+/* =====================================================
+   LOAD DESIGN SETTINGS
+===================================================== */
+
+async function loadDesignSettings() {
+
+  const designRef =
+    doc(
+      db,
+      "settings",
+      "design"
+    );
+
+
+  const designSnap =
+    await getDoc(
+      designRef
+    );
+
+
+  const data =
+    designSnap.exists()
+      ? designSnap.data()
+      : {};
+
+
+  if ($("primaryColor")) {
+
+    $("primaryColor").value =
+      data.primaryColor ||
+      "#111111";
+
+  }
+
+
+  if ($("buttonColor")) {
+
+    $("buttonColor").value =
+      data.buttonColor ||
+      "#111111";
+
+  }
+
+
+  /*
+    ملاحظة:
+    heroTitle و heroImage موجودان في
+    إعدادات المطعم وليس التصميم،
+    حتى لا يصير تعارض بين النموذجين.
+  */
+
+
+  if ($("heroDescription")) {
+
+    $("heroDescription").value =
+      data.heroDescription ||
+      "";
+
+  }
+
+}
+
+
+/* =====================================================
+   LOAD DESIGN
+===================================================== */
 
 async function loadDesign() {
 
@@ -2073,88 +2249,113 @@ async function loadDesign() {
 }
 
 
-/* حفظ التخصيص */
+/* =====================================================
+   SAVE DESIGN
+===================================================== */
 
-$("designForm").addEventListener(
-  "submit",
-  async e => {
+if ($("designForm")) {
 
-    e.preventDefault();
+  $("designForm").addEventListener(
+    "submit",
+    async event => {
 
-    try {
+      event.preventDefault();
 
-      let heroImageValue =
-  $("heroImage").value.trim();
 
-const file =
-  $("heroFile")?.files?.[0];
+      try {
 
-if (file) {
-
-  toast("جاري تصغير وضغط صورة الغلاف...");
-
-  heroImageValue =
-    await compressImage(file);
-
-}
-      await setDoc(
-        doc(db, "settings", "design"),
-        {
+        const data = {
 
           primaryColor:
-            $("primaryColor").value,
+            $("primaryColor")?.value ||
+            "#111111",
 
           buttonColor:
-            $("buttonColor").value,
-
-          heroTitle:
-            $("heroTitle").value.trim(),
+            $("buttonColor")?.value ||
+            "#111111",
 
           heroDescription:
-            $("heroDescription").value.trim(),
-
-          heroImage:
-            $("heroImage").value.trim(),
+            $("heroDescription")?.value.trim() ||
+            "",
 
           updatedAt:
             serverTimestamp()
 
-        },
-        {
-          merge: true
-        }
-      );
+        };
 
-      toast("تم حفظ التخصيص ✅");
 
-    } catch (error) {
+        await setDoc(
 
-      console.error(error);
+          doc(
+            db,
+            "settings",
+            "design"
+          ),
 
-      alert(
-        "حدث خطأ أثناء حفظ التخصيص:\n" +
-        error.message
-      );
+          data,
+
+          {
+            merge: true
+          }
+
+        );
+
+
+        toast(
+          "تم حفظ التخصيص ✅"
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Design save error:",
+          error
+        );
+
+
+        alert(
+          "حدث خطأ أثناء حفظ التخصيص:\n" +
+          error.message
+        );
+
+      }
 
     }
+  );
 
-  }
-);
-/* =========================================
-   معاينة صورة الغلاف
-========================================= */
+}
 
-const heroFile = $("heroFile");
-const heroPreview = $("heroPreview");
-const heroImage = $("heroImage");
 
-if (heroFile) {
+/* =====================================================
+   HERO IMAGE PREVIEW
+===================================================== */
+
+const heroFile =
+  $("heroFile");
+
+
+const heroPreview =
+  $("heroPreview");
+
+
+const heroImage =
+  $("heroImage");
+
+
+if (
+  heroFile &&
+  heroPreview
+) {
 
   heroFile.onchange = () => {
 
-    const file = heroFile.files[0];
+    const file =
+      heroFile.files?.[0];
+
 
     if (!file) return;
+
 
     heroPreview.src =
       URL.createObjectURL(file);
@@ -2163,19 +2364,25 @@ if (heroFile) {
 
 }
 
-if (heroImage) {
+
+if (
+  heroImage &&
+  heroPreview
+) {
 
   heroImage.oninput = () => {
 
     const url =
-      heroImageValue,;
+      heroImage.value.trim();
+
 
     if (url) {
 
-      heroPreview.src = url;
+      heroPreview.src =
+        url;
 
     }
 
   };
 
-  }
+}
