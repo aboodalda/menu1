@@ -2083,6 +2083,20 @@ $("designForm").addEventListener(
 
     try {
 
+      let heroImageValue =
+  $("heroImage").value.trim();
+
+const file =
+  $("heroFile")?.files?.[0];
+
+if (file) {
+
+  toast("جاري تصغير وضغط صورة الغلاف...");
+
+  heroImageValue =
+    await compressImage(file);
+
+}
       await setDoc(
         doc(db, "settings", "design"),
         {
@@ -2154,7 +2168,7 @@ if (heroImage) {
   heroImage.oninput = () => {
 
     const url =
-      heroImage.value.trim();
+      heroImageValue,;
 
     if (url) {
 
