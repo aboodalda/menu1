@@ -1,3 +1,7 @@
+/* =====================================================
+   FIREBASE CONFIG
+===================================================== */
+
 const firebaseConfig = {
   apiKey: "AIzaSyCsS0rR0wOz3mGBszmtKwPXQZi4pFVcukA",
   authDomain: "cafemenu-3ff9a.firebaseapp.com",
@@ -7,25 +11,42 @@ const firebaseConfig = {
   appId: "1:52378316579:web:8512b57f8a9c6f64b8a696"
 };
 
+
+/* =====================================================
+   GLOBAL DATA
+===================================================== */
+
 let products = [];
 let categories = [];
+
 let activeCategory = "الكل";
 
 let restaurant = {
   name: "CaféMenu",
   tagline: "منيو إلكتروني",
-  description: "اكتشف أشهى الوجبات والحلويات والمشروبات في مكان واحد.",
+  description:
+    "اكتشف أشهى الوجبات والحلويات والمشروبات في مكان واحد.",
   heroTitle: "طعم يستحق التجربة",
+  heroDescription:
+    "اكتشف أشهى الوجبات والحلويات والمشروبات في مكان واحد.",
   heroImage: "",
   logo: "☕",
   phone: "0590000000",
   whatsapp: "970590000000",
   address: "موقع المطعم",
-  hours: "يومياً 10:00 - 23:00"
+  hours: "يومياً 10:00 - 23:00",
+  primaryColor: "",
+  buttonColor: ""
 };
 
-let cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
+/* =====================================================
+   CART
+===================================================== */
+
+let cart = JSON.parse(
+  localStorage.getItem("cart") || "[]"
+);
 
 
 /* =====================================================
@@ -36,10 +57,12 @@ async function loadFirebaseData() {
 
   try {
 
-    const { initializeApp } =
-      await import(
-        "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"
-      );
+    const {
+      initializeApp
+    } = await import(
+      "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"
+    );
+
 
     const {
       getFirestore,
@@ -47,123 +70,188 @@ async function loadFirebaseData() {
       getDocs,
       doc,
       getDoc
-    } =
-      await import(
-        "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"
+    } = await import(
+      "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js"
+    );
+
+
+    const app =
+      initializeApp(firebaseConfig);
+
+    const db =
+      getFirestore(app);
+
+
+    /* =================================================
+       RESTAURANT SETTINGS
+    ================================================= */
+
+    try {
+
+      const restaurantRef =
+        doc(
+          db,
+          "settings",
+          "restaurant"
+        );
+
+
+      const restaurantSnap =
+        await getDoc(
+          restaurantRef
+        );
+
+
+      if (
+        restaurantSnap.exists()
+      ) {
+
+        const data =
+          restaurantSnap.data();
+
+
+        restaurant = {
+
+          ...restaurant,
+
+          name:
+            data.restaurantName ||
+            data.name ||
+            restaurant.name,
+
+          tagline:
+            data.tagline ||
+            restaurant.tagline,
+
+          description:
+            data.description ||
+            restaurant.description,
+
+          heroTitle:
+            data.heroTitle ||
+            restaurant.heroTitle,
+
+          /*
+             مهم:
+             نقرأ heroImage من إعدادات المطعم
+             إذا كانت موجودة.
+          */
+          heroImage:
+            data.heroImage ||
+            restaurant.heroImage,
+
+          logo:
+            data.logoUrl ||
+            data.logo ||
+            restaurant.logo,
+
+          phone:
+            data.phone ||
+            restaurant.phone,
+
+          whatsapp:
+            data.whatsapp ||
+            restaurant.whatsapp,
+
+          address:
+            data.address ||
+            restaurant.address,
+
+          hours:
+            data.hours ||
+            restaurant.hours
+
+        };
+
+      }
+
+    } catch (settingsError) {
+
+      console.warn(
+        "Restaurant settings could not be loaded:",
+        settingsError
       );
 
-    const app = initializeApp(firebaseConfig);
-
-    const db = getFirestore(app);
+    }
 
 
+    /* =================================================
+       DESIGN SETTINGS
+    ================================================= */
 
-    /* =========================
-       RESTAURANT SETTINGS
-    ========================= */
+    try {
 
-try {
+      const designRef =
+        doc(
+          db,
+          "settings",
+          "design"
+        );
 
-  const restaurantRef =
-    doc(db, "settings", "restaurant");
 
-  const restaurantSnap =
-    await getDoc(restaurantRef);
+      const designSnap =
+        await getDoc(
+          designRef
+        );
 
-  if (restaurantSnap.exists()) {
 
-    const data = restaurantSnap.data();
+      if (
+        designSnap.exists()
+      ) {
 
-    restaurant = {
-      ...restaurant,
+        const design =
+          designSnap.data();
 
-      name:
-        data.restaurantName ||
-        data.name ||
-        restaurant.name,
 
-      tagline:
-        data.tagline ||
-        restaurant.tagline,
+        /*
+          ندمج إعدادات التصميم
+          مع بيانات المطعم.
 
-      description:
-        data.description ||
-        restaurant.description,
+          heroImage هنا لها أولوية
+          لأنها محفوظة من قسم تخصيص المنيو.
+        */
 
-      heroTitle:
-        data.heroTitle ||
-        restaurant.heroTitle,
+        restaurant = {
 
-      heroImage:
-        data.heroImage ||
-        restaurant.heroImage,
+          ...restaurant,
 
-      logo:
-        data.logoUrl ||
-        data.logo ||
-        restaurant.logo,
+          primaryColor:
+            design.primaryColor ||
+            restaurant.primaryColor,
 
-      phone:
-        data.phone ||
-        restaurant.phone,
+          buttonColor:
+            design.buttonColor ||
+            restaurant.buttonColor,
 
-      whatsapp:
-        data.whatsapp ||
-        restaurant.whatsapp,
+          heroTitle:
+            design.heroTitle ||
+            restaurant.heroTitle,
 
-      address:
-        data.address ||
-        restaurant.address,
+          heroDescription:
+            design.heroDescription ||
+            restaurant.heroDescription,
 
-      hours:
-        data.hours ||
-        restaurant.hours
-    };
+          heroImage:
+            design.heroImage ||
+            restaurant.heroImage
 
-  }
+        };
 
-} catch (settingsError) {
+      }
 
-  console.warn(
-    "Restaurant settings could not be loaded:",
-    settingsError
-  );
+    } catch (designError) {
 
-}
+      console.warn(
+        "Design settings could not be loaded:",
+        designError
+      );
 
-/* =========================
-   DESIGN SETTINGS
-========================= */
+    }
 
-try {
 
-  const designRef =
-    doc(db, "settings", "design");
-
-  const designSnap =
-    await getDoc(designRef);
-
-  if (designSnap.exists()) {
-
-    restaurant = {
-      ...restaurant,
-      ...designSnap.data()
-    };
-
-  }
-
-} catch (designError) {
-
-  console.warn(
-    "Design settings could not be loaded:",
-    designError
-  );
-
-}
-
-    /* =========================
+    /* =================================================
        CATEGORIES + PRODUCTS
-    ========================= */
+    ================================================= */
 
     const [
       categoriesSnap,
@@ -171,39 +259,66 @@ try {
     ] = await Promise.all([
 
       getDocs(
-        collection(db, "categories")
+        collection(
+          db,
+          "categories"
+        )
       ),
 
       getDocs(
-        collection(db, "products")
+        collection(
+          db,
+          "products"
+        )
       )
 
     ]);
 
 
     categories =
-      categoriesSnap.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      categoriesSnap.docs.map(
+        item => ({
+
+          id: item.id,
+
+          ...item.data()
+
+        })
+      );
 
 
     products =
       productsSnap.docs
 
-        .map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }))
+        .map(
+          item => ({
+
+            id: item.id,
+
+            ...item.data()
+
+          })
+        )
 
         .filter(
-          p => p.available !== false
+          product =>
+            product.available !== false
         );
 
 
+    /* =================================================
+       APPLY SETTINGS
+    ================================================= */
+
     applyRestaurantSettings();
 
+
+    /* =================================================
+       RENDER
+    ================================================= */
+
     render();
+
 
   } catch (error) {
 
@@ -212,11 +327,18 @@ try {
       error
     );
 
+
     const productsElement =
-      document.getElementById("products");
+      document.getElementById(
+        "products"
+      );
+
 
     const featuredElement =
-      document.getElementById("featuredProducts");
+      document.getElementById(
+        "featuredProducts"
+      );
+
 
     if (productsElement) {
 
@@ -224,6 +346,7 @@ try {
         "<p>حدث خطأ أثناء تحميل المنيو.</p>";
 
     }
+
 
     if (featuredElement) {
 
@@ -237,17 +360,21 @@ try {
 }
 
 
-
 /* =====================================================
-   HELPER
+   SET TEXT
 ===================================================== */
 
-function setText(id, value) {
+function setText(
+  id,
+  value
+) {
 
   const element =
     document.getElementById(id);
 
+
   if (!element) return;
+
 
   if (
     value !== undefined &&
@@ -255,16 +382,16 @@ function setText(id, value) {
     String(value).trim() !== ""
   ) {
 
-    element.textContent = value;
+    element.textContent =
+      value;
 
   }
 
 }
 
 
-
 /* =====================================================
-   RESTAURANT SETTINGS
+   APPLY RESTAURANT SETTINGS
 ===================================================== */
 
 function applyRestaurantSettings() {
@@ -273,94 +400,116 @@ function applyRestaurantSettings() {
     restaurant.name ||
     "CaféMenu";
 
+
   const tagline =
     restaurant.tagline ||
     "منيو إلكتروني";
+
 
   const description =
     restaurant.description ||
     "اكتشف أشهى الوجبات والحلويات والمشروبات في مكان واحد.";
 
+
   const heroTitle =
     restaurant.heroTitle ||
     "طعم يستحق التجربة";
+
+
+  const heroDescription =
+    restaurant.heroDescription ||
+    description;
+
 
   const phone =
     restaurant.phone ||
     "0590000000";
 
+
   const whatsapp =
     restaurant.whatsapp ||
     "970590000000";
 
+
   const address =
     restaurant.address ||
     "موقع المطعم";
+
 
   const hours =
     restaurant.hours ||
     "يومياً 10:00 - 23:00";
 
 
-
-  /* =========================
+  /* =================================================
      TEXT
-  ========================= */
+  ================================================= */
 
   setText(
     "restaurantName",
     name
   );
 
+
   setText(
     "footerName",
     name
   );
+
 
   setText(
     "copyrightName",
     name
   );
 
+
   setText(
     "restaurantTagline",
     tagline
   );
+
 
   setText(
     "heroTitle",
     heroTitle
   );
 
+
   setText(
     "heroDescription",
-    description
+    heroDescription
   );
+
 
   setText(
     "restaurantHours",
     hours
   );
 
+
   setText(
     "restaurantAddress",
     address
   );
+
 
   setText(
     "restaurantPhone",
     phone
   );
 
+
   setText(
     "footerAddress",
     `📍 ${address}`
   );
 
+
   setText(
     "footerPhone",
     `📞 ${phone}`
   );
+
 
   setText(
     "footerHours",
@@ -368,15 +517,15 @@ function applyRestaurantSettings() {
   );
 
 
-
-  /* =========================
+  /* =================================================
      LOGO
-  ========================= */
+  ================================================= */
 
   applyLogo(
     "restaurantLogo",
     restaurant.logo
   );
+
 
   applyLogo(
     "footerLogo",
@@ -384,101 +533,139 @@ function applyRestaurantSettings() {
   );
 
 
-
-  /* =========================
+  /* =================================================
      PHONE
-  ========================= */
+  ================================================= */
 
   const phoneLink =
-    document.getElementById("phoneLink");
+    document.getElementById(
+      "phoneLink"
+    );
+
 
   if (phoneLink) {
 
     phoneLink.href =
-      `tel:${phone.replace(/\s+/g, "")}`;
+      `tel:${cleanPhone(phone)}`;
 
   }
 
 
-
-  /* =========================
+  /* =================================================
      WHATSAPP
-  ========================= */
+  ================================================= */
 
   const whatsappLink =
-    document.getElementById("whatsappLink");
+    document.getElementById(
+      "whatsappLink"
+    );
+
 
   if (whatsappLink) {
 
     whatsappLink.href =
-      `https://wa.me/${cleanPhone(whatsapp)}`;
+      `https://wa.me/${cleanPhone(
+        whatsapp
+      )}`;
 
   }
 
 
-
-  /* =========================
+  /* =================================================
      HERO IMAGE
-  ========================= */
+  ================================================= */
 
-  if (restaurant.heroImage) {
+  applyHeroImage();
+
+
+  /* =================================================
+     DESIGN COLORS
+  ================================================= */
+
+  if (
+    restaurant.primaryColor
+  ) {
 
     document.documentElement.style
       .setProperty(
-        "--restaurant-hero",
-        `url("${restaurant.heroImage}")`
+        "--primary",
+        restaurant.primaryColor
       );
 
   }
-/* =========================
-   DESIGN COLORS
-========================= */
 
-if (restaurant.primaryColor) {
 
-  document.documentElement.style.setProperty(
-    "--primary",
-    restaurant.primaryColor
-  );
-
-}
-
-if (restaurant.buttonColor) {
-
-  document.documentElement.style.setProperty(
-    "--button",
+  if (
     restaurant.buttonColor
-  );
+  ) {
+
+    document.documentElement.style
+      .setProperty(
+        "--button",
+        restaurant.buttonColor
+      );
+
+  }
 
 }
-}
 
+
+/* =====================================================
+   HERO IMAGE
+===================================================== */
+
+function applyHeroImage() {
+
+  const hero =
+    document.querySelector(
+      ".hero"
+    );
+
+
+  const image =
+    restaurant.heroImage;
+
+
+  if (
+    hero &&
+    image &&
+    String(image).trim()
+  ) {
+
+    hero.style.backgroundImage =
+      `url("${String(image)
+        .replace(/"/g, '\\"')}")`;
+
+  }
+
+}
 
 
 /* =====================================================
    LOGO
 ===================================================== */
 
-function applyLogo(id, logo) {
+function applyLogo(
+  id,
+  logo
+) {
 
   const element =
     document.getElementById(id);
+
 
   if (!element) return;
 
 
   if (!logo) {
 
-    element.textContent = "☕";
+    element.textContent =
+      "☕";
 
     return;
 
   }
 
-
-  /*
-    إذا كان الرابط صورة
-  */
 
   if (
     typeof logo === "string" &&
@@ -489,8 +676,11 @@ function applyLogo(id, logo) {
   ) {
 
     element.innerHTML = `
+
       <img
-        src="${logo}"
+        src="${escapeHtmlAttribute(
+          logo
+        )}"
         alt="شعار المطعم"
         style="
           width:100%;
@@ -499,35 +689,72 @@ function applyLogo(id, logo) {
           border-radius:inherit;
         "
       >
+
     `;
 
   } else {
 
-    /*
-      إذا كان Emoji
-    */
-
-    element.textContent = logo;
+    element.textContent =
+      logo;
 
   }
 
 }
 
 
-
 /* =====================================================
-   PHONE
+   CLEAN PHONE
 ===================================================== */
 
-function cleanPhone(phone) {
+function cleanPhone(
+  phone
+) {
 
-  return String(phone || "")
+  return String(
+    phone || ""
+  )
     .replace(/\+/g, "")
     .replace(/\s+/g, "")
-    .replace(/-/g, "");
+    .replace(/-/g, "")
+    .replace(/\(/g, "")
+    .replace(/\)/g, "");
 
 }
 
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHtml(
+  value
+) {
+
+  return String(
+    value ?? ""
+  ).replace(
+    /[&<>"']/g,
+    character => ({
+
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+
+    }[character])
+  );
+
+}
+
+
+function escapeHtmlAttribute(
+  value
+) {
+
+  return escapeHtml(value);
+
+}
 
 
 /* =====================================================
@@ -537,103 +764,133 @@ function cleanPhone(phone) {
 function renderCategories() {
 
   const container =
-    document.getElementById("categories");
+    document.getElementById(
+      "categories"
+    );
+
 
   const menuContainer =
-    document.getElementById("menuCategories");
+    document.getElementById(
+      "menuCategories"
+    );
 
 
   const allCategories = [
+
     {
       id: "all",
       name: "الكل"
     },
+
     ...categories
+
   ];
 
 
   const html =
-    allCategories.map(c => {
+    allCategories.map(
+      category => {
 
-      const safeName =
-        String(c.name || "")
-          .replace(/'/g, "\\'");
+        const categoryName =
+          category.name || "";
 
-      return `
-        <button
-          class="category ${
-            c.name === activeCategory
-              ? "active"
-              : ""
-          }"
-          onclick="setCategory('${safeName}')"
-        >
-          ${c.name || ""}
-        </button>
-      `;
 
-    }).join("");
+        return `
+
+          <button
+            class="category ${
+              categoryName ===
+              activeCategory
+                ? "active"
+                : ""
+            }"
+            onclick="setCategory('${escapeHtmlAttribute(
+              categoryName
+            )}')"
+          >
+
+            ${escapeHtml(
+              categoryName
+            )}
+
+          </button>
+
+        `;
+
+      }
+    ).join("");
 
 
   if (container) {
 
-    container.innerHTML = html;
+    container.innerHTML =
+      html;
 
   }
 
 
   if (menuContainer) {
 
-    menuContainer.innerHTML = html;
+    menuContainer.innerHTML =
+      html;
 
   }
 
 }
 
 
-
 /* =====================================================
    PRODUCT CARD
 ===================================================== */
 
-function card(p) {
+function card(product) {
 
   const image =
-    p.image ||
+    product.image ||
     "https://placehold.co/900x600?text=CafeMenu";
 
 
   const name =
-    p.name || "";
+    product.name ||
+    "";
 
 
   const description =
-    p.description ||
+    product.description ||
     "بدون وصف";
 
 
   const price =
-    Number(p.price || 0);
-
+    Number(
+      product.price || 0
+    );
 
 
   return `
+
     <article class="product">
 
       <img
-        src="${image}"
-        alt="${name}"
+        src="${escapeHtmlAttribute(
+          image
+        )}"
+        alt="${escapeHtmlAttribute(
+          name
+        )}"
         loading="lazy"
+        onerror="this.src='https://placehold.co/900x600?text=CafeMenu'"
       >
 
       <div class="product-body">
 
         <h3>
-          ${name}
+          ${escapeHtml(name)}
         </h3>
 
         <p>
-          ${description}
+          ${escapeHtml(
+            description
+          )}
         </p>
 
         <div class="product-bottom">
@@ -644,7 +901,9 @@ function card(p) {
 
           <button
             class="add-btn"
-            onclick="addToCart('${p.id}')"
+            onclick="addToCart('${escapeHtmlAttribute(
+              product.id
+            )}')"
           >
             + أضف
           </button>
@@ -654,10 +913,10 @@ function card(p) {
       </div>
 
     </article>
+
   `;
 
 }
-
 
 
 /* =====================================================
@@ -681,40 +940,69 @@ function render() {
 
 
   const list =
-    products.filter(p => {
+    products.filter(
+      product => {
 
-      const categoryMatch =
-        activeCategory === "الكل" ||
+        const categoryMatch =
 
-        p.categoryId === activeCategory ||
+          activeCategory ===
+          "الكل"
 
-        categories.some(
-          c =>
-            c.id === p.categoryId &&
-            c.name === activeCategory
+          ||
+
+          product.categoryId ===
+          activeCategory
+
+          ||
+
+          categories.some(
+            category =>
+
+              category.id ===
+              product.categoryId
+
+              &&
+
+              category.name ===
+              activeCategory
+          );
+
+
+        const searchMatch =
+
+          !q
+
+          ||
+
+          (
+            product.name ||
+            ""
+          )
+            .toLowerCase()
+            .includes(q)
+
+          ||
+
+          (
+            product.description ||
+            ""
+          )
+            .toLowerCase()
+            .includes(q);
+
+
+        return (
+          categoryMatch &&
+          searchMatch
         );
 
-
-      const searchMatch =
-        !q ||
-
-        (p.name || "")
-          .toLowerCase()
-          .includes(q) ||
-
-        (p.description || "")
-          .toLowerCase()
-          .includes(q);
+      }
+    );
 
 
-      return (
-        categoryMatch &&
-        searchMatch
-      );
-
-    });
-
-
+  /* =================================================
+     PRODUCTS
+  ================================================= */
 
   const productsElement =
     document.getElementById(
@@ -725,23 +1013,30 @@ function render() {
   if (productsElement) {
 
     productsElement.innerHTML =
+
       list.length
 
-        ? list.map(card).join("")
+        ? list
+            .map(card)
+            .join("")
 
-        : "<p>لا توجد أصناف في هذا القسم.</p>";
+        : `
+          <p>
+            لا توجد أصناف في هذا القسم.
+          </p>
+        `;
 
   }
 
 
-
-  /* =========================
+  /* =================================================
      FEATURED
-  ========================= */
+  ================================================= */
 
   const featured =
     products.filter(
-      p => p.featured === true
+      product =>
+        product.featured === true
     );
 
 
@@ -754,11 +1049,18 @@ function render() {
   if (featuredElement) {
 
     featuredElement.innerHTML =
+
       featured.length
 
-        ? featured.map(card).join("")
+        ? featured
+            .map(card)
+            .join("")
 
-        : "<p>لا توجد أصناف مميزة حالياً.</p>";
+        : `
+          <p>
+            لا توجد أصناف مميزة حالياً.
+          </p>
+        `;
 
   }
 
@@ -770,12 +1072,13 @@ function render() {
 }
 
 
-
 /* =====================================================
    CATEGORY
 ===================================================== */
 
-function setCategory(category) {
+function setCategory(
+  category
+) {
 
   activeCategory =
     category;
@@ -785,17 +1088,18 @@ function setCategory(category) {
 }
 
 
-
 /* =====================================================
-   CART
+   CART - ADD
 ===================================================== */
 
-function addToCart(id) {
+function addToCart(
+  id
+) {
 
   const item =
     cart.find(
-      x =>
-        String(x.id) ===
+      product =>
+        String(product.id) ===
         String(id)
     );
 
@@ -807,8 +1111,11 @@ function addToCart(id) {
   } else {
 
     cart.push({
+
       id: id,
+
       qty: 1
+
     });
 
   }
@@ -819,17 +1126,18 @@ function addToCart(id) {
 }
 
 
-
 /* =====================================================
-   REMOVE
+   CART - REMOVE
 ===================================================== */
 
-function removeFromCart(id) {
+function removeFromCart(
+  id
+) {
 
   cart =
     cart.filter(
-      x =>
-        String(x.id) !==
+      item =>
+        String(item.id) !==
         String(id)
     );
 
@@ -837,7 +1145,6 @@ function removeFromCart(id) {
   saveCart();
 
 }
-
 
 
 /* =====================================================
@@ -851,10 +1158,10 @@ function saveCart() {
     JSON.stringify(cart)
   );
 
+
   updateCart();
 
 }
-
 
 
 /* =====================================================
@@ -865,8 +1172,12 @@ function updateCart() {
 
   const count =
     cart.reduce(
-      (sum, item) =>
-        sum + item.qty,
+      (
+        total,
+        item
+      ) =>
+        total +
+        Number(item.qty || 0),
       0
     );
 
@@ -875,6 +1186,7 @@ function updateCart() {
     document.getElementById(
       "cartCount"
     );
+
 
   const cartCountTop =
     document.getElementById(
@@ -898,7 +1210,6 @@ function updateCart() {
   }
 
 
-
   const items =
     document.getElementById(
       "cartItems"
@@ -911,12 +1222,26 @@ function updateCart() {
   if (!cart.length) {
 
     items.innerHTML =
-      '<p style="color:var(--muted)">السلة فارغة حالياً.</p>';
+      `
+        <p style="color:var(--muted)">
+          السلة فارغة حالياً.
+        </p>
+      `;
 
-    document.getElementById(
-      "cartTotal"
-    ).textContent =
-      "0 ₪";
+
+    const totalElement =
+      document.getElementById(
+        "cartTotal"
+      );
+
+
+    if (totalElement) {
+
+      totalElement.textContent =
+        "0 ₪";
+
+    }
+
 
     return;
 
@@ -929,61 +1254,90 @@ function updateCart() {
 
 
   items.innerHTML =
-    cart.map(item => {
+    cart
+      .map(
+        item => {
 
-      const product =
-        products.find(
-          p =>
-            String(p.id) ===
-            String(item.id)
-        );
-
-
-      if (!product) {
-
-        return "";
-
-      }
+          const product =
+            products.find(
+              p =>
+                String(p.id) ===
+                String(item.id)
+            );
 
 
-      validCart.push(item);
+          if (!product) {
+
+            return "";
+
+          }
 
 
-      total +=
-        Number(product.price || 0) *
-        item.qty;
+          validCart.push(
+            item
+          );
 
 
-      return `
-        <div class="cart-row">
+          const qty =
+            Number(
+              item.qty || 0
+            );
 
-          <div>
 
-            <strong>
-              ${product.name}
-            </strong>
+          const price =
+            Number(
+              product.price || 0
+            );
 
-            <br>
 
-            <small>
-              ${item.qty}
-              ×
-              ${product.price}
-              ₪
-            </small>
+          const subtotal =
+            price * qty;
 
-          </div>
 
-          <button
-            onclick="removeFromCart('${product.id}')"
-          >
-            حذف
-          </button>
+          total +=
+            subtotal;
 
-        </div>
-      `;
 
-    }).join("");
+          return `
+
+            <div class="cart-row">
+
+              <div>
+
+                <strong>
+                  ${escapeHtml(
+                    product.name
+                  )}
+                </strong>
+
+                <br>
+
+                <small>
+
+                  ${qty}
+                  ×
+                  ${price}
+                  ₪
+
+                </small>
+
+              </div>
+
+              <button
+                onclick="removeFromCart('${escapeHtmlAttribute(
+                  product.id
+                )}')"
+              >
+                حذف
+              </button>
+
+            </div>
+
+          `;
+
+        }
+      )
+      .join("");
 
 
   cart =
@@ -996,13 +1350,20 @@ function updateCart() {
   );
 
 
-  document.getElementById(
-    "cartTotal"
-  ).textContent =
-    total + " ₪";
+  const totalElement =
+    document.getElementById(
+      "cartTotal"
+    );
+
+
+  if (totalElement) {
+
+    totalElement.textContent =
+      total + " ₪";
+
+  }
 
 }
-
 
 
 /* =====================================================
@@ -1025,9 +1386,8 @@ if (searchInput) {
 }
 
 
-
 /* =====================================================
-   CART BUTTON
+   OPEN CART
 ===================================================== */
 
 function openCart() {
@@ -1036,6 +1396,7 @@ function openCart() {
     document.getElementById(
       "cartModal"
     );
+
 
   if (modal) {
 
@@ -1076,7 +1437,6 @@ if (cartBtnTop) {
 }
 
 
-
 /* =====================================================
    CLOSE CART
 ===================================================== */
@@ -1092,14 +1452,23 @@ if (closeCart) {
   closeCart.onclick =
     () => {
 
-      document
-        .getElementById("cartModal")
-        .classList.add("hidden");
+      const modal =
+        document.getElementById(
+          "cartModal"
+        );
+
+
+      if (modal) {
+
+        modal.classList.add(
+          "hidden"
+        );
+
+      }
 
     };
 
 }
-
 
 
 /* =====================================================
@@ -1122,19 +1491,21 @@ if (themeBtn) {
         .toggle("dark");
 
 
-      themeBtn.textContent =
+      const isDark =
         document.body.classList.contains(
           "dark"
-        )
+        );
+
+
+      themeBtn.textContent =
+        isDark
           ? "☀️"
           : "🌙";
 
 
       localStorage.setItem(
         "dark",
-        document.body.classList.contains(
-          "dark"
-        )
+        isDark
       );
 
     };
@@ -1143,8 +1514,9 @@ if (themeBtn) {
 
 
 if (
-  localStorage.getItem("dark") ===
-  "true"
+  localStorage.getItem(
+    "dark"
+  ) === "true"
 ) {
 
   document.body
@@ -1160,7 +1532,6 @@ if (
   }
 
 }
-
 
 
 /* =====================================================
@@ -1180,7 +1551,9 @@ if (whatsappBtn) {
 
       if (!cart.length) {
 
-        alert("السلة فارغة");
+        alert(
+          "السلة فارغة"
+        );
 
         return;
 
@@ -1192,38 +1565,51 @@ if (whatsappBtn) {
       let total = 0;
 
 
-      cart.forEach(item => {
+      cart.forEach(
+        item => {
 
-        const product =
-          products.find(
-            p =>
-              String(p.id) ===
-              String(item.id)
+          const product =
+            products.find(
+              p =>
+                String(p.id) ===
+                String(item.id)
+            );
+
+
+          if (!product) return;
+
+
+          const qty =
+            Number(
+              item.qty || 0
+            );
+
+
+          const subtotal =
+            Number(
+              product.price || 0
+            ) * qty;
+
+
+          total +=
+            subtotal;
+
+
+          lines.push(
+            `• ${product.name} × ${qty} = ${subtotal} ₪`
           );
 
-
-        if (!product) return;
-
-
-        const subtotal =
-          Number(product.price || 0) *
-          item.qty;
+        }
+      );
 
 
-        total += subtotal;
-
-
-        lines.push(
-          `• ${product.name} × ${item.qty} = ${subtotal} ₪`
-        );
-
-      });
-
-
-      const msg =
-        `مرحباً، أريد طلب:%0A` +
-        lines.join("%0A") +
-        `%0A%0Aالإجمالي: ${total} ₪`;
+      const message =
+        [
+          "مرحباً، أريد طلب:",
+          ...lines,
+          "",
+          `الإجمالي: ${total} ₪`
+        ].join("\n");
 
 
       const number =
@@ -1234,14 +1620,15 @@ if (whatsappBtn) {
 
 
       window.open(
-        `https://wa.me/${number}?text=${msg}`,
+        `https://wa.me/${number}?text=${encodeURIComponent(
+          message
+        )}`,
         "_blank"
       );
 
     };
 
 }
-
 
 
 /* =====================================================
