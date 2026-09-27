@@ -1,36 +1,112 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <meta name="theme-color" content="#16264A">
-
   <title>CaféMenu | لوحة صاحب المطعم</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="owner.css">
 </head>
-
 <body>
 
-<!-- =========================================
-     LOGIN
-========================================= -->
-
 <div id="loginScreen" class="login-screen">
-
   <div class="login-card">
-
     <div class="logo">☕</div>
-
     <h1>CaféMenu</h1>
-
     <p>لوحة صاحب المطعم</p>
-
     <form id="loginForm">
+      <label>البريد الإلكتروني<input id="loginEmail" type="email" autocomplete="username" required></label>
+      <label>كلمة المرور<input id="loginPassword" type="password" autocomplete="current-password" required></label>
+      <button class="primary full" type="submit">تسجيل الدخول</button>
+      <div id="loginError" class="error"></div>
+    </form>
+  </div>
+</div>
 
-      <input
+<div id="app" class="app hidden">
+  <aside class="sidebar">
+    <div class="side-brand"><div class="logo small">☕</div><div><strong>CaféMenu</strong><span>إدارة المنيو</span></div></div>
+    <nav>
+      <button class="nav active" data-page="dashboard">🏠 الرئيسية</button>
+      <button class="nav" data-page="categories">📂 الأقسام</button>
+      <button class="nav" data-page="products">🍽️ المنتجات</button>
+      <button class="nav" data-page="settings">⚙️ إعدادات المطعم</button>
+      <button class="nav" data-page="design">🎨 التخصيص</button>
+    </nav>
+    <button id="logoutBtn" class="logout">تسجيل الخروج</button>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div><span class="eyebrow">CAFEMENU</span><h1 id="pageTitle">الرئيسية</h1></div>
+      <a class="view-menu" href="./" target="_blank" rel="noopener">👁️ عرض المنيو</a>
+    </header>
+
+    <section id="dashboardPage" class="page">
+      <div class="stats">
+        <div class="stat"><span>الأقسام</span><strong id="categoryCount">0</strong></div>
+        <div class="stat"><span>المنتجات</span><strong id="productCount">0</strong></div>
+        <div class="stat"><span>المتوفر</span><strong id="availableCount">0</strong></div>
+        <div class="stat"><span>المميز</span><strong id="featuredCount">0</strong></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div><h2>إدارة سريعة</h2><p>أضف محتوى جديدًا أو افتح القسم المطلوب.</p></div></div>
+        <div class="quick-actions">
+          <button id="quickCategory" class="quick">📂<b>إضافة قسم</b><small>إنشاء قسم جديد</small></button>
+          <button id="quickProduct" class="quick">🍽️<b>إضافة منتج</b><small>إضافة صنف للمنيو</small></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="categoriesPage" class="page hidden">
+      <div class="panel-head"><div><h2>الأقسام</h2><p>إدارة أقسام المنيو والصور الخاصة بها.</p></div><button id="addCategoryBtn" class="primary">+ إضافة قسم</button></div>
+      <div id="categoriesGrid" class="cards-grid"></div>
+    </section>
+
+    <section id="productsPage" class="page hidden">
+      <div class="panel-head"><div><h2>المنتجات</h2><p>إدارة الأسعار والوصف والتوفر والمنتجات المميزة.</p></div><button id="addProductBtn" class="primary">+ إضافة منتج</button></div>
+      <div id="productsGrid" class="cards-grid"></div>
+    </section>
+
+    <section id="settingsPage" class="page hidden">
+      <form id="settingsForm" class="panel form-grid">
+        <div class="panel-head full-row"><div><h2>إعدادات المطعم</h2><p>هذه البيانات تظهر مباشرة في المنيو.</p></div><button class="primary" type="submit">حفظ الإعدادات</button></div>
+        <label>اسم المطعم<input id="restaurantName" required></label>
+        <label>الوصف المختصر<input id="tagline"></label>
+        <label>عنوان الـ Hero<input id="heroTitle"></label>
+        <label class="full-row">وصف الـ Hero<textarea id="description" rows="3"></textarea></label>
+        <label>رابط صورة الـ Hero<input id="heroImage" placeholder="https://..."></label>
+        <label>رابط الشعار<input id="logoUrl" placeholder="https://..."></label>
+        <label>رقم واتساب<input id="whatsapp" placeholder="97059..."></label>
+        <label>رقم الهاتف<input id="phone" placeholder="059..."></label>
+        <label>العنوان<input id="address"></label>
+        <label>أوقات العمل<input id="hours"></label>
+        <div class="full-row image-preview-wrap"><input id="heroFile" type="file" accept="image/*" hidden><img id="heroPreview" class="hero-preview" alt="معاينة صورة الـ Hero"></div>
+      </form>
+    </section>
+
+    <section id="designPage" class="page hidden">
+      <form id="designForm" class="panel form-grid">
+        <div class="panel-head full-row"><div><h2>تخصيص التصميم</h2><p>غيّر الألوان والوصف الإضافي للمنيو.</p></div><button class="primary" type="submit">حفظ التخصيص</button></div>
+        <label>اللون الأساسي<input id="primaryColor" type="color" value="#111111"></label>
+        <label>لون الأزرار<input id="buttonColor" type="color" value="#111111"></label>
+        <label class="full-row">وصف الـ Hero الإضافي<textarea id="heroDescription" rows="4"></textarea></label>
+      </form>
+    </section>
+  </main>
+</div>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-card">
+    <button id="closeModal" class="modal-close" type="button">×</button>
+    <h2 id="modalTitle">إضافة</h2>
+    <form id="entityForm" class="entity-form"></form>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script type="module" src="owner.js"></script>
+</body>
+</html>
