@@ -1089,6 +1089,17 @@ function setCategory(
 
 
 /* =====================================================
+   PUBLIC UI HANDLERS
+   script.js is a module, so inline onclick handlers
+   need explicit window bindings.
+===================================================== */
+
+window.setCategory = setCategory;
+window.addToCart = addToCart;
+window.removeFromCart = removeFromCart;
+
+
+/* =====================================================
    CART - ADD
 ===================================================== */
 
